@@ -28,7 +28,6 @@ using     mole = BaseUnit<5,7>;
 using  candela = BaseUnit<6,7>;
 using      foo = BaseUnit<7,7>; // == Unit<0,...,0,1>
 
-using metre_per_second_squared = quotient_unit< metre, sqare_unit<second>>;
 
 //derived units
 using    radian = unitless;
