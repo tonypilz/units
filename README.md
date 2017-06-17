@@ -28,7 +28,7 @@ Initial release.
 The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure. And finally, having a specific type attached to each dimension makes reading code a lot easier.
 
 ## Target Users
-There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) (3800 sloc) or [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11) (2500 sloc). All these implementations have in common that they consist of quite a lot of lines of code (boost >4000, nholt/unit 3800, PysUnit 2500) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
+There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11). All these implementations have in common that they consist of quite a lot of lines of code (boost >4000, nholt/unit 3800, PysUnit 2500) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
 
 This library tries to adress the issue by beeing as small (350 sloc) and simple (macro-free) as possible to allow users to reason faster about the code and adjust it to their needs more easily.  
 
