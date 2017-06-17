@@ -1,46 +1,42 @@
 #pragma once
 
-#include "unitHelper1.h"
+#include "unitHelper.h"
 #include <ostream>
 
 namespace unit {
 
-    template<typename U>
-    constexpr const char* unitSymbol();
+template <typename U>
+constexpr const char* unitSymbol();
 
-namespace  helper{
+namespace helper {
 
-    template<typename U, DimensionIndex pos>
-    void print_dimension_symbol_and_exponent(std::ostream& s)
-    {
-        static constexpr TExponent e = helper::exponent<U,pos>();
-        if (e==0) return;
-        s << unitSymbol<typename BaseUnitGen<U::exponent_count()-1,pos>::type>();
-        if (e!=1) {
-            s << "^" << e;
-        }
+namespace print {
+
+template <typename U, DimensionIndex pos>
+void print_unit_symbol_and_exponent(std::ostream& s) {
+    static constexpr TExponent e = helper::exponent<U, pos>();
+    if (e == 0)
+        return;
+    s << unitSymbol<typename baseunit::BaseUnitGen<U::exponent_count() - 1, pos>::type>();
+    if (e != 1) {
+        s << "^" << e;
     }
-
-
-
-    template<typename U, DimensionIndex pos>
-    struct DimensionsPrinter {
-        static void print_unit(std::ostream& s){
-              DimensionsPrinter<U,pos-1>::print_unit(s);
-              print_dimension_symbol_and_exponent<U,pos>(s);
-        }
-
-    };
-
-    template<typename U>
-    struct DimensionsPrinter<U,0> {
-        static void print_unit(std::ostream& s){
-            print_dimension_symbol_and_exponent<U,0>(s);
-        }
-    };
-
 }
 
+template <typename U, DimensionIndex pos>
+struct DimensionsPrinter {
+    static void print_unit(std::ostream& s) {
+        DimensionsPrinter<U, pos - 1>::print_unit(s);
+        print_unit_symbol_and_exponent<U, pos>(s);
+    }
+};
+
+template <typename U>
+struct DimensionsPrinter<U, 0> {
+    static void print_unit(std::ostream& s) { print_unit_symbol_and_exponent<U, 0>(s); }
+};
+}
+}
 
 /**
  * generic unit printing, can be spezialized for custom unit symbols
@@ -52,12 +48,8 @@ namespace  helper{
  * - "mkg"
  *     for calling print_unit<Unit<1,1,0,0,0,0,0>>(cout);
  */
-template<typename U>
-void print_unit(std::ostream& s){
-    helper::DimensionsPrinter<U,U::exponent_count()-1>::print_unit(s);
+template <typename U>
+void print_unit(std::ostream& s) {
+    helper::print::DimensionsPrinter<U, U::exponent_count() - 1>::print_unit(s);
 }
-
-
-
 }
-

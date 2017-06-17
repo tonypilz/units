@@ -4,10 +4,10 @@
 
 #include <src/unit/Unit.h>
 #include <src/unit/unitHelper.h>
-#include <src/unit/unitHelper1.h>
 #include <src/unit/unitOperators.h>
 #include <src/unit/unitPrinting.h>
 #include <src/unit/UnitReading.h>
+#include <src/unit/unitScaling.h>
 
 
 #include <string>
@@ -30,7 +30,7 @@ namespace tests {
 
 
 
-static_assert(std::is_same<typename helper::BaseUnitGen<3,1>::type,Unit<0,1,0,0>>::value,"");
+static_assert(std::is_same<typename helper::baseunit::BaseUnitGen<3,1>::type,Unit<0,1,0,0>>::value,"");
 static_assert(helper::exponent<Unit<0,7,0,0,0,0,0>,1>()==7,"");
 static_assert(Unit<0,7,0,0,0,0,0>::exponent_count() == 7,"");
 

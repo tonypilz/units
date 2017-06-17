@@ -1,11 +1,9 @@
 #pragma once
 
 #include "unitHelper.h"
+#include "unitTypes.h"
 
 namespace unit {
-
-using TExponent = int;
-using ExponentIndex = int; //cannot be unsigned since UnitOperator uses -1 for recursion abortion
 
 template<TExponent ... dimensionExponents >
 struct Unit{
@@ -15,8 +13,7 @@ struct Unit{
     static constexpr unsigned exponent_count() {return sizeof...(dimensionExponents);}
 
     template<ExponentIndex i>
-    static constexpr TExponent exponent_value() { return helper::NthElement<i,dimensionExponents...>::value(); }
+    static constexpr TExponent exponent_value() { return helper::nthElement::NthElement<i,dimensionExponents...>::value(); }
 };
-
 
 }

@@ -1,64 +1,49 @@
 #pragma once
 
-#include <ratio>
+#include "unitTypes.h"
 
 namespace unit {
+
+template <TExponent... dimensionExponents>
+struct Unit;
+
 namespace helper {
+
+// helper to shorten access
+template <typename Unit, ExponentIndex i>
+constexpr TExponent exponent() {
+    return Unit::template exponent_value<i>();
+}
+
+namespace nthElement {
 
 using Index = unsigned int;
 
-template<Index n, int Arg, int... Args>
-struct NthElement{
-    static constexpr int value() { return NthElement<n-1,Args...>::value(); }
+template <Index n, TExponent Arg, TExponent... Args>
+struct NthElement {
+    static constexpr int value() { return NthElement<n - 1, Args...>::value(); }
 };
 
+template <TExponent Arg, TExponent... Args>
+struct NthElement<0, Arg, Args...> {
+    static constexpr int value() { return Arg; }
+};
+}
 
+namespace baseunit {
 
-template<int Arg, int... Args>
-struct NthElement<0u, Arg, Args...>{
-    static constexpr int value(){ return Arg;}
+template <DimensionIndex it, DimensionIndex index, TExponent... exponents>
+struct BaseUnitGen {
+    using type = typename BaseUnitGen<it - 1, index, it == index ? 1 : 0, exponents...>::type;
 };
 
-
-
-
-
-template<typename ratioIn, typename ratioOut, typename T >
-constexpr T rescale(T const& v)
-{
-    using r = std::ratio_divide<ratioIn,ratioOut>;
-    return v*T{r::num}/T{r::den};
-}
-
-template<typename ratioIn, typename T >
-constexpr T rescaleTo1(T const& v)
-{
-    return rescale<ratioIn,std::ratio<1>,T>(v);
+template <DimensionIndex index, TExponent... exponents>
+struct BaseUnitGen<-1, index, exponents...> {
+    using type = Unit<exponents...>;
+};
 }
 }
 
-
-
-
-template<typename T> constexpr T femto(T const& v) { return helper::rescaleTo1<std::femto>(v); }
-template<typename T> constexpr T pico(T const& v) { return helper::rescaleTo1<std::pico>(v); }
-template<typename T> constexpr T nano(T const& v) { return helper::rescaleTo1<std::nano>(v); }
-template<typename T> constexpr T micro(T const& v) { return helper::rescaleTo1<std::micro>(v); }
-template<typename T> constexpr T milli(T const& v) { return helper::rescaleTo1<std::milli>(v); }
-template<typename T> constexpr T centi(T const& v) { return helper::rescaleTo1<std::centi>(v); }
-template<typename T> constexpr T deci(T const& v) { return helper::rescaleTo1<std::deci>(v); }
-template<typename T> constexpr T deca(T const& v) { return helper::rescaleTo1<std::deca>(v); }
-template<typename T> constexpr T hecto(T const& v) { return helper::rescaleTo1<std::hecto>(v); }
-template<typename T> constexpr T kilo(T const& v) { return helper::rescaleTo1<std::kilo>(v); }
-template<typename T> constexpr T mega(T const& v) { return helper::rescaleTo1<std::mega>(v); }
-template<typename T> constexpr T giga(T const& v) { return helper::rescaleTo1<std::giga>(v); }
-template<typename T> constexpr T tera(T const& v) { return helper::rescaleTo1<std::tera>(v); }
-template<typename T> constexpr T peta(T const& v) { return helper::rescaleTo1<std::peta>(v); }
-
-
-
-
-} //helper
-
-
-
+template <int dimension, int lastDimension>
+using BaseUnit = typename helper::baseunit::BaseUnitGen<lastDimension, dimension>::type;
+}

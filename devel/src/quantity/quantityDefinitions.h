@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Quantity.h"
-#include <src/unit/unitHelper1.h>
+#include <src/unit/unitHelper.h>
 #include <src/unit/unitOperators.h>
+#include <src/unit/unitScaling.h>
 
 #include <ratio>
 #include <ostream>
