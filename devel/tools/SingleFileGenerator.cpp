@@ -21,13 +21,18 @@
 //#define _GLIBCXX_ISTREAM 1
 
 
+//all
+#include <src/quantity/quantityOperators.h>
+#include <src/quantity/quantityMath.h>
 
+//si
 #include <src/quantity/quantityReading.h>
 #include <src/quantity/quantityPrinting.h>
-#include <src/quantity/quantityOperators.h>
-#include <src/quantity/quantityDefinitions.h>
+#include <src/quantity/quantityDefinitionsSI.h>
 
-
+//minimal
+//#include <src/unit/unitScaling.h>
+//#include <src/quantity/quantityDefinitionsMinimalExample.h>
 
 
 SingleFileGenerator::SingleFileGenerator()

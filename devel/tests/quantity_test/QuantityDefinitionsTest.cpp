@@ -1,6 +1,6 @@
 #include "QuantityDefinitionsTest.h"
 
-#include <src/quantity/quantityDefinitions.h>
+#include <src/quantity/quantityDefinitionsSI.h>
 #include <src/quantity/quantityOperators.h>
 
 #include <iostream>

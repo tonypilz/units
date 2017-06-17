@@ -3,6 +3,7 @@ SOURCES +=  \
         $$PWD/SingleFileTester.cpp
 
 HEADERS += \
-        $$PWD/SingleFile.h \
         $$PWD/SingleFileGenerator.h \
-        $$PWD/SingleFileTester.h
+        $$PWD/SingleFileTester.h \
+    $$PWD/SingleFileMinimalExample.h \
+    $$PWD/SingleFileSi.h

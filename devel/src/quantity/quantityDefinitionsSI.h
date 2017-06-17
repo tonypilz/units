@@ -8,7 +8,6 @@
 #include <ratio>
 #include <ostream>
 
-//////////////////////////////definitions///////////////////////////////////////////
 
 namespace unit {
 
@@ -224,5 +223,3 @@ template<> inline void print_unit<    u::katal>(std::ostream& s){ s<<"ka"; }
 
 }
 
-
-//////////////////////////////end definitions///////////////////////////////////////////

@@ -60,6 +60,7 @@ static_assert(milli(2002)==2,"");
 static_assert(helper::rescale<std::milli,std::micro>(2.5)==2500.0,"");
 static_assert(helper::rescaleTo1<std::milli>(2.5)==helper::rescale<std::milli,std::ratio<1>>(2.5),"");
 
+
 void print_unit_test()
 {
 

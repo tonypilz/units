@@ -92,81 +92,6 @@ struct BaseUnitGen<-1, index, exponents...> {
 template <int dimension, int lastDimension>
 using BaseUnit = typename helper::baseunit::BaseUnitGen<lastDimension, dimension>::type;
 
-template <typename U>
-constexpr const char* unitSymbol();
-
-namespace helper {
-
-namespace print {
-
-template <typename U, DimensionIndex pos>
-void print_unit_symbol_and_exponent(std::ostream& s) {
-    static constexpr TExponent e = helper::exponent<U, pos>();
-    if (e == 0)
-        return;
-    s << unitSymbol<typename baseunit::BaseUnitGen<U::exponent_count() - 1, pos>::type>();
-    if (e != 1) {
-        s << "^" << e;
-    }
-}
-
-template <typename U, DimensionIndex pos>
-struct DimensionsPrinter {
-    static void print_unit(std::ostream& s) {
-        DimensionsPrinter<U, pos - 1>::print_unit(s);
-        print_unit_symbol_and_exponent<U, pos>(s);
-    }
-};
-
-template <typename U>
-struct DimensionsPrinter<U, 0> {
-    static void print_unit(std::ostream& s) { print_unit_symbol_and_exponent<U, 0>(s); }
-};
-}
-}
-
-template <typename U>
-void print_unit(std::ostream& s) {
-    helper::print::DimensionsPrinter<U, U::exponent_count() - 1>::print_unit(s);
-}
-
-template <typename Unit>
-std::istream& read_unit(std::istream& s) {
-    std::ostringstream expectedBuff;
-    print_unit<Unit>(expectedBuff);
-
-    for (auto const& expected : expectedBuff.str()) {
-        char found;
-        s >> found;
-        if (!s || found != expected) {
-            s.setstate(std::ios::failbit);
-            return s;
-        }
-    }
-    return s;
-}
-
-template <typename Unit, typename TValue>
-std::istream& operator>>(std::istream& s, Quantity<Unit, TValue>& v) {
-    TValue val;
-    s >> val;
-    if (!s)
-        return s;
-
-    if (!read_unit<Unit>(s))
-        return s;
-
-    v.setMagnitude(Quantity<Unit, TValue>{val});
-    return s;
-}
-
-template <typename Unit, typename TValue>
-std::ostream& operator<<(std::ostream& s, Quantity<Unit, TValue> const& v) {
-    s << v.magnitude();
-    print_unit<Unit>(s);
-    return s;
-}
-
 template <TExponent... dimensionExponents>
 struct Unit {
     using classtype = Unit<dimensionExponents...>;
@@ -180,6 +105,7 @@ struct Unit {
 };
 
 namespace helper {
+
 namespace op {
 
 template <typename U1, typename U2, int index>
@@ -306,6 +232,118 @@ template <typename LU, typename LT>
 constexpr Quantity<LU, LT> operator-(Quantity<LU, LT> const& l) {
     return Quantity<LU, LT>{-l.magnitude()};
 }
+namespace math {
+
+template <typename U, typename T>
+constexpr Quantity<U, decltype(std::abs(T{}))> abs(Quantity<U, T> const& q) {
+    return Quantity<U, decltype(std::abs(T{}))>{std::abs(q.magnitude())};
+}
+
+template <typename U, typename T>
+constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))> sqrt(Quantity<U, T> const& q) {
+    return Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>{std::sqrt(q.magnitude())};
+}
+
+namespace helper {
+template <typename power, typename T>
+constexpr decltype(std::pow(T{}, T{})) pow_impl(T const& v) {
+    return std::pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
+}
+}
+
+template <typename power, typename U, typename T>
+constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))> pow(Quantity<U, T> const& q) {
+    return Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>{
+        helper::pow_impl<power, T>(q.magnitude())};
+}
+
+template <typename U, typename T>
+constexpr auto cube(Quantity<U, T> const& q)
+    -> Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())> {
+    return Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())>{
+        (q.magnitude() * q.magnitude()) * q.magnitude()};
+}
+
+template <typename U, typename T>
+constexpr auto square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
+    return Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>{q.magnitude() * q.magnitude()};
+}
+}
+
+template <typename U>
+constexpr const char* unitSymbol();
+
+namespace helper {
+
+namespace print {
+
+template <typename U, DimensionIndex pos>
+void print_unit_symbol_and_exponent(std::ostream& s) {
+    static constexpr TExponent e = helper::exponent<U, pos>();
+    if (e == 0)
+        return;
+    s << unitSymbol<typename baseunit::BaseUnitGen<U::exponent_count() - 1, pos>::type>();
+    if (e != 1) {
+        s << "^" << e;
+    }
+}
+
+template <typename U, DimensionIndex pos>
+struct DimensionsPrinter {
+    static void print_unit(std::ostream& s) {
+        DimensionsPrinter<U, pos - 1>::print_unit(s);
+        print_unit_symbol_and_exponent<U, pos>(s);
+    }
+};
+
+template <typename U>
+struct DimensionsPrinter<U, 0> {
+    static void print_unit(std::ostream& s) { print_unit_symbol_and_exponent<U, 0>(s); }
+};
+}
+}
+
+template <typename U>
+void print_unit(std::ostream& s) {
+    helper::print::DimensionsPrinter<U, U::exponent_count() - 1>::print_unit(s);
+}
+
+template <typename Unit>
+std::istream& read_unit(std::istream& s) {
+    std::ostringstream expectedBuff;
+    print_unit<Unit>(expectedBuff);
+
+    for (auto const& expected : expectedBuff.str()) {
+        char found;
+        s >> found;
+        if (!s || found != expected) {
+            s.setstate(std::ios::failbit);
+            return s;
+        }
+    }
+    return s;
+}
+
+template <typename Unit, typename TValue>
+std::istream& operator>>(std::istream& s, Quantity<Unit, TValue>& v) {
+    TValue val;
+    s >> val;
+    if (!s)
+        return s;
+
+    if (!read_unit<Unit>(s))
+        return s;
+
+    v.setMagnitude(Quantity<Unit, TValue>{val});
+    return s;
+}
+
+template <typename Unit, typename TValue>
+std::ostream& operator<<(std::ostream& s, Quantity<Unit, TValue> const& v) {
+    s << v.magnitude();
+    print_unit<Unit>(s);
+    return s;
+}
 namespace helper {
 
 template <typename ratioIn, typename ratioOut, typename T>
@@ -352,7 +390,6 @@ using mole = BaseUnit<5,7>;
 using candela = BaseUnit<6,7>;
 using foo = BaseUnit<7,7>;
 
-using metre_per_second_squared = quotient_unit< metre, sqare_unit<second>>;
 
 
 using radian = unitless;
