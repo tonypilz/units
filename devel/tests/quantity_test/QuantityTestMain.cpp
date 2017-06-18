@@ -14,9 +14,14 @@
 #include <complex>
 #include <cassert>
 #include <iostream>
+#include <type_traits>
+
+// array comparisons
+
+#include <array>
+
 
 namespace tests {
-
 
 
 using namespace unit;
@@ -147,8 +152,6 @@ static_assert(math::pow<std::ratio<1>>(-7.5_newton)==-7.5_newton,"");
 static_assert(math::pow<std::ratio<2>>(-7.5_newton)==math::square(-7.5_newton),"");
 
 
-
-
 static_assert(math::pow<std::ratio<0>>(-7.5_newton)==1.0_unitless,"");
 
 static_assert( 4.3_newton == 4.3_newton,"");
@@ -167,7 +170,6 @@ static_assert(-4.0_newton * 5.0_newton == Quantity<product_unit<u::newton,u::new
 static_assert(-4.0_newton / 5.0_newton == -0.8_unitless,"");
 
 static_assert(static_unit_cast<double>(Quantity<u::newton,int>{-4})==-4.0_newton,"");
-
 
 
 static_assert(Quantity<u::newton>{-4}==-4.0_newton,"");
@@ -199,9 +201,26 @@ void read_unit_test_v()
     }
 }
 
+static_assert(-4.0_newton / 5.0_newton == -0.8_unitless,"");
 
+void array_test ()
+{
+    using T = std::array<int,5>;
+    using anewton = Quantity<u::newton, T> ;
 
+    constexpr anewton a{T{10, 20, 30, 40, 50}};
+    constexpr anewton b{T{0, 0, 0, 0, 0}};
 
+    if (a!=a) assert(false);
+    if (a<a) assert(false);
+    if (a>a) assert(false);
+    if (!(a==a)) assert(false);
+    if (!(a>=a)) assert(false);
+    if (!(a<=a)) assert(false);
+
+    if (a==b) assert(false);
+    if (a<=b) assert(false);
+}
 
 
 
@@ -217,5 +236,6 @@ QuantityTestMain::QuantityTestMain()
     complex_math_test();
     quantity_test();
 
+    array_test();
 }
 }
