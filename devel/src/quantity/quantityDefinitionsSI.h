@@ -4,6 +4,7 @@
 #include <src/unit/unitHelper.h>
 #include <src/unit/unitOperators.h>
 #include <src/unit/unitScaling.h>
+#include <src/quantity/quantityOperators.h>
 
 #include <ratio>
 #include <ostream>
@@ -100,7 +101,6 @@ using     katal = Quantity<u::katal,     def>;
 //custom units
 using metre_cubed = Quantity<u::metre_cubed, def>;
 
-using mol_inv = Quantity<u::mol_inv,     def>;
 
 
 
@@ -116,10 +116,35 @@ constexpr double poundToKilogram(long double v ) { return static_cast<double>(v*
 
 }
 
-namespace constants {
+namespace constant {
 
-constexpr unitless pi{ 3.14159265359 };
-constexpr mol_inv Avogadro{ 6.022140857e23 };
+constexpr   unitless operator"" _number ( long double v )  {return unitless {static_cast<double>(v)};}
+
+constexpr long double e = 2.718281828459045235360287471352662497757247093699959574966L;
+constexpr long double exp2 = 7.389056098930650227230427460575007813180315570551847324087L;
+constexpr long double ln2 = 0.693147180559945309417232121458176568075500134360255254120L;
+constexpr long double pi_ld = 3.141592653589793238462643383279502884L;
+
+constexpr auto pi = unitless{pi_ld};
+
+constexpr auto avogadro = 6.022140857E+23_number / mole{1};
+constexpr auto boltzmann = 1.38064852E-23_number * joule{1} / kilogram{1};
+constexpr auto classicalElectronRadius = 2.8179403227E-15_number * metre{1};
+constexpr auto conductanceQuantum = 7.7480917310E-5_number * siemens{1};
+constexpr auto dirac = 1.054571800E-34_number * joule{1} * second{1};
+constexpr auto electric = 8.854187817E-12_number * farad{1} / metre{1};
+constexpr auto electronMass = 9.10938356E-31_number * kilogram{1};
+constexpr auto elementaryCharge = 1.6021766208E-19_number * coulomb{1};
+constexpr auto faraday = 96485.33289_number * coulomb{1} / mole{1};
+constexpr auto fineStructure = 7.2973525664E-3_number;
+constexpr auto gravitation = 6.67408E-11_number * metre{1} * metre{1} * metre{1} / kilogram{1} / second{1} / second{1};
+constexpr auto lightSpeed = 2.99792458E8_number * metre{1} / second{1};
+constexpr auto magnetic = 12.566370614E-7_number * newton{1} / ampere{1} / ampere{1};
+constexpr auto magneticFluxQuantum = 2.067833831E-15_number * weber{1};
+constexpr auto molarGas = 8.3144598_number * joule{1} / mole{1} / kelvin{1};
+constexpr auto planck = 6.626070040E-34_number * joule{1} * second{1};
+constexpr auto rydberg = 10973731.568508_number / metre{1};
+constexpr auto stefanBoltzmann = 5.670367E-8_number * watt{1} / metre{1} / metre{1} / kelvin{1} / kelvin{1} / kelvin{1} / kelvin{1};
 
 }
 
@@ -127,7 +152,7 @@ namespace literals {
 
 //base units
 constexpr   unitless operator"" _unitless ( long double v )  {return    unitless {static_cast<double>(v)};}
-constexpr   unitless operator""       _ul ( long double v )  {return    unitless {static_cast<double>(v)};}
+constexpr   unitless operator""   _number ( long double v )  {return    unitless {static_cast<double>(v)};}
 
 constexpr    metre operator""    _metre ( long double v )  {return     metre {static_cast<double>(v)};}
 constexpr kilogram operator"" _kilogram ( long double v )  {return  kilogram {static_cast<double>(v)};}
