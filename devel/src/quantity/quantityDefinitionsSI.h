@@ -17,16 +17,16 @@ namespace u {
 //these units are taken from https://en.wikipedia.org/wiki/International_System_of_Units
 
 //base units
-using unitless = BaseUnit<-1,7>;// == Unit<0,...,0>
+using unitless = BaseUnit<-1,6>;// == Unit<0,...,0>
 
-using    metre = BaseUnit<0,7>; // == Unit<1,0,...,0>
-using kilogram = BaseUnit<1,7>;
-using   second = BaseUnit<2,7>;
-using   ampere = BaseUnit<3,7>;
-using   kelvin = BaseUnit<4,7>;
-using     mole = BaseUnit<5,7>;
-using  candela = BaseUnit<6,7>;
-using      foo = BaseUnit<7,7>; // == Unit<0,...,0,1>
+using    metre = BaseUnit<0,6>; // == Unit<1,0,...,0>
+using kilogram = BaseUnit<1,6>;
+using   second = BaseUnit<2,6>;
+using   ampere = BaseUnit<3,6>;
+using   kelvin = BaseUnit<4,6>;
+using     mole = BaseUnit<5,6>;
+using  candela = BaseUnit<6,6>; // == Unit<0,...,0,1>
+
 
 
 //derived units
@@ -73,7 +73,6 @@ using   ampere = Quantity<u::ampere,   def>;
 using   kelvin = Quantity<u::kelvin,   def>;
 using     mole = Quantity<u::mole,     def>;
 using  candela = Quantity<u::candela,  def>;
-using      foo = Quantity<u::foo,      def>;
 
 //derived units
 using    radian = Quantity<u::radian,    def>;
@@ -161,7 +160,6 @@ constexpr   ampere operator""   _ampere ( long double v )  {return    ampere {st
 constexpr   kelvin operator""   _kelvin ( long double v )  {return    kelvin {static_cast<double>(v)};}
 constexpr     mole operator""     _mole ( long double v )  {return      mole {static_cast<double>(v)};}
 constexpr  candela operator""  _candela ( long double v )  {return   candela {static_cast<double>(v)};}
-constexpr      foo operator""      _foo ( long double v )  {return       foo {static_cast<double>(v)};}
 
 
 //derived units
@@ -218,7 +216,6 @@ template<> inline constexpr const char* unitSymbol<  u::ampere>(){ return "A";}
 template<> inline constexpr const char* unitSymbol<  u::kelvin>(){ return "K";}
 template<> inline constexpr const char* unitSymbol<    u::mole>(){ return "mol";}
 template<> inline constexpr const char* unitSymbol< u::candela>(){ return "cd";}
-template<> inline constexpr const char* unitSymbol<     u::foo>(){ return "foo";}
 
 //derived units
 
