@@ -15,7 +15,7 @@ Initial release.
  
 # Contents
 - [UNITS](#units)
-- [Latest Release - v1.1.0](#latest-release---v110)
+- [Latest Release - v1.1.0](#latest-release---v100)
   - [Tested on](#tested-on)
   - [Compiles Under](#compiles-under)
 - [Contents](#contents)
@@ -23,7 +23,7 @@ Initial release.
 - [Features](#features)
 - [Limitations](#limitations)
 - [Getting Started Guide](#getting-started-guide)
-- [Adding a new Math Function](#adding-a-new-math-munction)
+- [Adding a new Math Function](#adding-a-new-math-function)
 - [Representation in non-base-units](#representation-in-non-base-units)
 - [Adjusting the Library](#adjusting-the-library)
 - [Under the Hood](#under-the-hood)
@@ -34,20 +34,19 @@ Initial release.
 The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure. And having the dimension attached to a value also makes stating the intent easier.
 
 ## Motivation
-There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [martinmoene/PhysUnits-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11)(a more comprehensive list can be found at [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11#other-libraries). All these implementations consist of a considerable amount of code (boost >4000 sloc, nholt/unit 3800 sloc, PysUnit 2500 sloc) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
+There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [martinmoene/PhysUnits-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11). A more comprehensive list can be found at [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11#other-libraries). All these implementations consist of a considerable amount of code (boost >4000 sloc, nholt/unit 3800 sloc, PysUnit 2500 sloc) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
 
 This library tries to adress the issue by beeing small (500 sloc*) and simple to allow users understand the code and adjust it to their needs more easily.  
 
 Note that 500 sloc includes SI-Unit-Definitions an input/output. The [essential code without input/output and predefined units](https://github.com/tonypilz/units/blob/master/devel/tools/SingleFileMinimalExample.h) consists of 250sloc.
 
 # Features
-This library can be used for
+The library can be used for
  - dimensional analysis on unrestricted value types (double, int, complex ...)
  - printing dimensioned values
  - reading dimensioned values
- - easy extension to special needs
  
- The library is well tested and incurs no runtime overhead.  
+It is easily extendable to special needs, mostly constexpr, well tested and incurs no runtime overhead (at -O1).
  
 # Limitations
 Storing values in non-base-units (e.g. millisecs) cannot be done with this library (see [Representation in non-base-units](#representation-in-non-base-units)). 
@@ -143,11 +142,7 @@ double v = a.magnitude();
 
 # Defining New Units
 
-Units can be defined anywhere. The existing definitions can be found in namespace, just search for `namespace u` in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) to find examples.
-
-```cpp
-using newton_squared = Quantity<sqare_unit<u::newton>>;
-```
+Units can be defined anywhere. The existing definitions can be found in namespace, just search for `namespace u` in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) to find example definitions.
 
 # Adding a new Math Function
 
@@ -163,11 +158,11 @@ One should also keep in mind that floating point types like double are especiall
 
 # Adjusting the Library
 
-The library can adjusted to special needs by adjusting the lower part of [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). The section to change starts with `namespace u` wich can be searched for. Everything below this line can be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
+The library can adjusted to special needs by adjusting the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file. The section to change starts with `namespace u` wich can be searched for. Everything below this line can be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
 
 # Under the Hood
 
-The library consists essentially of 2 classes
+The library essentially consists of 2 classes
 
 ```cpp
 
@@ -180,17 +175,17 @@ class Quantity {
 };
 ```
 
-The class `Quanitity` combines a magnitude-value and a unit-type. The class `unit` is a pure type wich is different for each pyhsical dimension by storing the exponents of all possible base-units as its template parameter. The following example illustrates the idea:
+The class `Quanitity` combines a magnitude-value and a unit-type. The class `unit` is a pure type wich is different for each physical dimension by storing the exponents of all possible base-units in its template parameter. The following example illustrates the idea:
 
 ```cpp
-using metre    = Unit<1,0,0>;  // represents the factors m^1 * kg^0 * s^0
-using kilogram = Unit<0,1,0>;  // represents the factors m^0 * kg^1 * s^0
-using second   = Unit<0,0,1>;  // represents the factors m^0 * kg^0 * s^1
+using metre    = Unit<1,0,0>;  // represents m^1 * kg^0 * s^0
+using kilogram = Unit<0,1,0>;  //            m^0 * kg^1 * s^0
+using second   = Unit<0,0,1>;  //            m^0 * kg^0 * s^1
 
-using meters_per_second = Unit<1,0,-1>  // m^1 * kg^0 * s^-1
-using acceleration = Unit<1,0,-2>       // m^1 * kg^0 * s^-2
+using meters_per_second = Unit<1,0,-1> //  m^1 * kg^0 * s^-1
+using acceleration = Unit<1,0,-2>      //  m^1 * kg^0 * s^-2
 
-using newton_force = Unit<1,1,-2>              // m^1 * kg^1 * s^-2
+using newton_force = Unit<1,1,-2> // m^1 * kg^1 * s^-2
 };
 ```
 
@@ -206,12 +201,14 @@ or
 Quantity< newton_force > q{5};
 ```
 
-Note that the definitions `metre`, `kilogram` and `second` are arbitraritly chosen and can be changed as well as the amount of units.
+Note that the definitions `metre`, `kilogram` and `second` are arbitraritly chosen and can be changed as well as their count.
 
-The rest of the library code past those 2 classes deals mainly with supporting them wich means improving their usage:
+The remaining library code past those 2 classes deals mainly with supporting them:
  - deriving units from operators eg `Unit<1,0,0> * Unit<0,0,1>` -> `Unit<1,0,1>`
  - deriving units from math functions eg `sqrt< Unit<6,0,0> >()` -> `Unit<3,0,0>`
  - printing units eg `print_unit< Unit<0,2,0> >();` -> prints `kg^2`
- - providing operators and math for class Quantity
- - convenicence stuff
+ - providing operators and math for class `Quantity`
+ - conversions between units and scales
+
+Further information can be found in the file [units.h](https://github.com/tonypilz/units/blob/master/include/units.h).
 
