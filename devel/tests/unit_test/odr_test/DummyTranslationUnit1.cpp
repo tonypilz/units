@@ -1,7 +1,7 @@
 #include "DummyTranslationUnit1.h"
 #include "UnitHeaders.h"
 #include <iostream>
-
+#include <ostream>
 namespace tests {
 namespace u {
 

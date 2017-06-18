@@ -4,8 +4,8 @@
 #include <src/unit/unitOperators.h>
 
 #include <ctgmath>
-#include <ratio>
-#include <type_traits>
+
+namespace std{ template<intmax_t, intmax_t > struct ratio;}
 
 namespace unit {
 namespace math {
@@ -46,5 +46,6 @@ template <typename U, typename T>
 constexpr auto square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
     return Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>{q.magnitude() * q.magnitude()};
 }
+
 }
 }
