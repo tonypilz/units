@@ -150,8 +150,15 @@ void complex_math_test() //complex functions are not constexpr, therefore non-st
         assert(b);
     }
 
+
 }
 
+void type_agnostic_test(){
+
+    using T = std::string;
+    const bool b = (Quantity<u::newton,T>{"aa"} + Quantity<u::newton,T>{"bbb"}) == Quantity<u::newton,T>{"aabbb"};
+    assert(b);
+}
 
 
 static_assert(math::abs(-7.0_newton)==7.0_newton,"");
@@ -254,6 +261,7 @@ QuantityTestMain::QuantityTestMain()
     print_derived_unit_test_v();
     complex_math_test();
     quantity_test();
+    type_agnostic_test();
 
     array_test();
 }
