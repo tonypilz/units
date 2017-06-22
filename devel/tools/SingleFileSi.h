@@ -383,7 +383,7 @@ namespace u {
 
 using unitless = BaseUnit<-1,7>;
 
-using metre = BaseUnit<0,7>;
+using meter = BaseUnit<0,7>;
 using kilogram = BaseUnit<1,7>;
 using second = BaseUnit<2,7>;
 using ampere = BaseUnit<3,7>;
@@ -397,9 +397,9 @@ using foo = BaseUnit<7,7>;
 using radian = unitless;
 using steradian = unitless;
 using hertz = quotient_unit< unitless, second>;
-using newton = quotient_unit< product_unit<kilogram, metre>, sqare_unit<second>>;
-using pascal = quotient_unit< newton, sqare_unit<metre>>;
-using joule = quotient_unit< newton, metre>;
+using newton = quotient_unit< product_unit<kilogram, meter>, sqare_unit<second>>;
+using pascal = quotient_unit< newton, sqare_unit<meter>>;
+using joule = quotient_unit< newton, meter>;
 using watt = quotient_unit< joule, second>;
 using coulomb = product_unit< second, ampere>;
 using volt = quotient_unit< watt, ampere>;
@@ -407,10 +407,10 @@ using farad = quotient_unit< coulomb, volt>;
 using ohm = quotient_unit< volt, ampere>;
 using siemens = quotient_unit< ampere, volt>;
 using weber = product_unit< volt, second>;
-using tesla = quotient_unit< weber, sqare_unit<metre>>;
+using tesla = quotient_unit< weber, sqare_unit<meter>>;
 using henry = quotient_unit< weber, ampere>;
 using lumen = product_unit< candela, steradian>;
-using lux = quotient_unit< lumen, sqare_unit<metre>>;
+using lux = quotient_unit< lumen, sqare_unit<meter>>;
 using becquerel = hertz;
 using gray = quotient_unit< joule, kilogram>;
 using sievert = gray;
@@ -418,9 +418,9 @@ using katal = quotient_unit< mole, second>;
 
 
 
-using metre_cubed = product_unit< metre, sqare_unit<metre>>;
-using metre_per_second = quotient_unit< metre, second>;
-using metre_per_second_squared = quotient_unit< metre, sqare_unit<second>>;
+using meter_cubed = product_unit< meter, sqare_unit<meter>>;
+using meter_per_second = quotient_unit< meter, second>;
+using meter_per_second_squared = quotient_unit< meter, sqare_unit<second>>;
 
 using mol_inv = quotient_unit< unitless, mole>;
 
@@ -430,7 +430,7 @@ using def = double;
 
 
 using unitless = Quantity<u::unitless, def>;
-using metre = Quantity<u::metre, def>;
+using meter = Quantity<u::meter, def>;
 using kilogram = Quantity<u::kilogram, def>;
 using second = Quantity<u::second, def>;
 using ampere = Quantity<u::ampere, def>;
@@ -463,7 +463,7 @@ using sievert = Quantity<u::sievert, def>;
 using katal = Quantity<u::katal, def>;
 
 
-using metre_cubed = Quantity<u::metre_cubed, def>;
+using meter_cubed = Quantity<u::meter_cubed, def>;
 
 using mol_inv = Quantity<u::mol_inv, def>;
 
@@ -494,7 +494,7 @@ namespace literals {
 constexpr unitless operator"" _unitless ( long double v ) {return unitless {static_cast<double>(v)};}
 constexpr unitless operator"" _ul ( long double v ) {return unitless {static_cast<double>(v)};}
 
-constexpr metre operator"" _metre ( long double v ) {return metre {static_cast<double>(v)};}
+constexpr meter operator"" _meter ( long double v ) {return meter {static_cast<double>(v)};}
 constexpr kilogram operator"" _kilogram ( long double v ) {return kilogram {static_cast<double>(v)};}
 constexpr second operator"" _second ( long double v ) {return second {static_cast<double>(v)};}
 constexpr ampere operator"" _ampere ( long double v ) {return ampere {static_cast<double>(v)};}
@@ -542,8 +542,8 @@ template<typename ratio>
 using ratio_cubed = std::ratio_multiply< std::ratio_multiply<ratio,ratio>,ratio>;
 
 
-constexpr metre_cubed operator"" _litre ( long double v ) {return metre_cubed {helper::rescaleTo1<ratio_cubed<std::deci>>(static_cast<double>(v))};}
-constexpr metre_cubed operator"" _millilitre ( long double v ) {return metre_cubed {helper::rescaleTo1<ratio_cubed<std::centi>>(static_cast<double>(v))};}
+constexpr meter_cubed operator"" _litre ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::deci>>(static_cast<double>(v))};}
+constexpr meter_cubed operator"" _millilitre ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::centi>>(static_cast<double>(v))};}
 
 
 }
@@ -551,7 +551,7 @@ constexpr metre_cubed operator"" _millilitre ( long double v ) {return metre_cub
 
 
 template<typename U> constexpr const char* unitSymbol();
-template<> inline constexpr const char* unitSymbol< u::metre>(){ return "m";}
+template<> inline constexpr const char* unitSymbol< u::meter>(){ return "m";}
 template<> inline constexpr const char* unitSymbol<u::kilogram>(){ return "kg";}
 template<> inline constexpr const char* unitSymbol< u::second>(){ return "s";}
 template<> inline constexpr const char* unitSymbol< u::ampere>(){ return "A";}

@@ -20,7 +20,7 @@ namespace u {
 //base units
 using unitless = BaseUnit<-1,6>;// == Unit<0,...,0>
 
-using    metre = BaseUnit<0,6>; // == Unit<1,0,...,0>
+using    meter = BaseUnit<0,6>; // == Unit<1,0,...,0>
 using kilogram = BaseUnit<1,6>;
 using   second = BaseUnit<2,6>;
 using   ampere = BaseUnit<3,6>;
@@ -34,9 +34,9 @@ using  candela = BaseUnit<6,6>; // == Unit<0,...,0,1>
 using    radian = unitless;
 using steradian = unitless;
 using     hertz = quotient_unit< unitless, second>;
-using    newton = quotient_unit< product_unit<kilogram, metre>, sqare_unit<second>>;
-using    pascal = quotient_unit< newton,  sqare_unit<metre>>;
-using     joule = quotient_unit< newton,  metre>;
+using    newton = quotient_unit< product_unit<kilogram, meter>, sqare_unit<second>>;
+using    pascal = quotient_unit< newton,  sqare_unit<meter>>;
+using     joule = quotient_unit< newton,  meter>;
 using      watt = quotient_unit< joule,   second>;
 using   coulomb = product_unit<  second,  ampere>;
 using      volt = quotient_unit< watt,    ampere>;
@@ -44,10 +44,10 @@ using     farad = quotient_unit< coulomb, volt>;
 using       ohm = quotient_unit< volt,    ampere>;
 using   siemens = quotient_unit< ampere,  volt>;
 using     weber = product_unit<  volt,    second>;
-using     tesla = quotient_unit< weber,   sqare_unit<metre>>;
+using     tesla = quotient_unit< weber,   sqare_unit<meter>>;
 using     henry = quotient_unit< weber,   ampere>;
 using     lumen = product_unit<  candela, steradian>;
-using       lux = quotient_unit< lumen,   sqare_unit<metre>>;
+using       lux = quotient_unit< lumen,   sqare_unit<meter>>;
 using becquerel = hertz;
 using      gray = quotient_unit< joule,   kilogram>;
 using   sievert = gray;
@@ -55,9 +55,9 @@ using     katal = quotient_unit< mole,    second>;
 
 
 //useful custom units
-using metre_cubed              = product_unit<  metre, sqare_unit<metre>>;
-using metre_per_second         = quotient_unit< metre, second>;
-using metre_per_second_squared = quotient_unit< metre, sqare_unit<second>>;
+using meter_cubed              = product_unit<  meter, sqare_unit<meter>>;
+using meter_per_second         = quotient_unit< meter, second>;
+using meter_per_second_squared = quotient_unit< meter, sqare_unit<second>>;
 
 using mol_inv   = quotient_unit< unitless, mole>;
 
@@ -67,7 +67,7 @@ using def = double; //default representation
 
 //base units
 using unitless = Quantity<u::unitless, def>;
-using    metre = Quantity<u::metre,    def>;
+using    meter = Quantity<u::meter,    def>;
 using kilogram = Quantity<u::kilogram, def>;
 using   second = Quantity<u::second,   def>;
 using   ampere = Quantity<u::ampere,   def>;
@@ -99,7 +99,7 @@ using   sievert = Quantity<u::sievert,   def>;
 using     katal = Quantity<u::katal,     def>;
 
 //custom units
-using metre_cubed = Quantity<u::metre_cubed, def>;
+using meter_cubed = Quantity<u::meter_cubed, def>;
 
 
 
@@ -108,9 +108,9 @@ namespace convert {
 template<typename T> constexpr T celsiusToKelvin(T v ) { return static_cast<double>(v+273.15); }
 template<typename T> constexpr T fahrenheitToKelvin(T v ) { return (v+459.67)*5.0/9.0; }
 
-template<typename T> constexpr T feedToMetre(T v ){ return static_cast<double>(v*0.3048); }
-template<typename T> constexpr T mileToMetre(T v ){ return static_cast<double>(v*1609.34); }
-template<typename T> constexpr T yardToMetre(T v ){ return static_cast<double>(v*0.9144); }
+template<typename T> constexpr T feedTometer(T v ){ return static_cast<double>(v*0.3048); }
+template<typename T> constexpr T mileTometer(T v ){ return static_cast<double>(v*1609.34); }
+template<typename T> constexpr T yardTometer(T v ){ return static_cast<double>(v*0.9144); }
 
 template<typename T> constexpr T poundToKilogram(T v ){ return static_cast<double>(v*0.45359237); }
 template<typename T> constexpr T ounceToKilogram(T v ){ return static_cast<double>(v*0.0283495); }
@@ -123,9 +123,9 @@ template<typename T> constexpr T dayTosecond(T v ){ return static_cast<double>(v
 template<typename T> constexpr T calorieToJoules(T v ){ return static_cast<double>(v*4184.0); }
 template<typename T> constexpr T watt_hourToJoules(T v ){ return static_cast<double>(v*3600.0); }
 
-template<typename T> constexpr T litreToCubicMetre(T v ){ return static_cast<double>(v*0.001); }
-template<typename T> constexpr T cubicCentimetreToCubicMetre(T v ){ return static_cast<double>(v*1.0e-6); }
-template<typename T> constexpr T gallonsToCubicMetre(T v ){ return static_cast<double>(v*0.00378541); }
+template<typename T> constexpr T litreToCubicmeter(T v ){ return static_cast<double>(v*0.001); }
+template<typename T> constexpr T cubicCentimeterToCubicmeter(T v ){ return static_cast<double>(v*1.0e-6); }
+template<typename T> constexpr T gallonsToCubicmeter(T v ){ return static_cast<double>(v*0.00378541); }
 
 }
 
@@ -136,6 +136,30 @@ constexpr auto pi = unitless{3.141592653589793238462643383279502884};
 
 }
 
+//temperature
+constexpr    kelvin     celsius ( double v ){ return kelvin {convert::celsiusToKelvin(v)};}
+constexpr    kelvin  fahrenheit ( double v ){ return kelvin {convert::fahrenheitToKelvin(v)};}
+//length
+constexpr     meter        feed ( double v ){ return meter {convert::feedTometer(v)};}
+constexpr     meter        mile ( double v ){ return meter {convert::mileTometer(v)};}
+constexpr     meter        yard ( double v ){ return meter {convert::yardTometer(v)};}
+//mass
+constexpr  kilogram       pound ( double v ){ return kilogram {convert::poundToKilogram(v)};}
+constexpr  kilogram       ounce ( double v ){ return kilogram {convert::ounceToKilogram(v)};}
+constexpr kilogram         gram ( double v ){return  kilogram {helper::rescale<std::ratio<1>,std::kilo>(v)};} //special case mass since baseunit is prefixed with 'kilo'
+//time
+constexpr  second        minute ( double v ){ return second {convert::minuteTosecond(v)};}
+constexpr  second          hour ( double v ){ return second {convert::hourTosecond(v)};}
+constexpr  second           day ( double v ){ return second {convert::dayTosecond(v)};}
+//energy
+constexpr  joule        calorie ( double v ){ return joule {convert::calorieToJoules(v)};}
+constexpr  joule      watt_hour ( double v ){ return joule {convert::watt_hourToJoules(v)};}
+//volume
+constexpr meter_cubed     litre ( double v ){return meter_cubed {convert::litreToCubicmeter(v)};}
+constexpr meter_cubed   gallons ( double v ){return meter_cubed {convert::gallonsToCubicmeter(v)};}
+//concentration
+constexpr unitless  parts_per_million ( double v ){return  unitless {micro(v)};}
+constexpr unitless            percent ( double v ){return  unitless {centi(v)};}
 
 
 namespace literals {
@@ -143,8 +167,9 @@ namespace literals {
 //base units
 constexpr   unitless operator"" _unitless ( long double v )  {return    unitless {static_cast<double>(v)};}
 constexpr   unitless operator""   _number ( long double v )  {return    unitless {static_cast<double>(v)};}
+constexpr   unitless operator""        _n ( long double v )  {return    unitless {static_cast<double>(v)};}
 
-constexpr    metre operator""    _metre ( long double v )  {return     metre {static_cast<double>(v)};}
+constexpr    meter operator""    _meter ( long double v )  {return     meter {static_cast<double>(v)};}
 constexpr kilogram operator"" _kilogram ( long double v )  {return  kilogram {static_cast<double>(v)};}
 constexpr   second operator""   _second ( long double v )  {return    second {static_cast<double>(v)};}
 constexpr   ampere operator""   _ampere ( long double v )  {return    ampere {static_cast<double>(v)};}
@@ -158,7 +183,7 @@ constexpr    radian operator""    _radian ( long double v )  {return     radian 
 constexpr steradian operator"" _steradian ( long double v )  {return  steradian {static_cast<double>(v)};}
 constexpr     hertz operator""     _hertz ( long double v )  {return      hertz {static_cast<double>(v)};}
 constexpr    newton operator""    _newton ( long double v )  {return     newton {static_cast<double>(v)};}
-constexpr    pascal operator""    _pascal_ ( long double v )  {return     pascal {static_cast<double>(v)};} // _pascal is reserved by clang
+constexpr    pascal operator""    _pascal_( long double v )  {return     pascal {static_cast<double>(v)};} // _pascal is reserved by clang
 constexpr     joule operator""     _joule ( long double v )  {return      joule {static_cast<double>(v)};}
 constexpr      watt operator""      _watt ( long double v )  {return       watt {static_cast<double>(v)};}
 constexpr   coulomb operator""   _coulomb ( long double v )  {return    coulomb {static_cast<double>(v)};}
@@ -176,45 +201,30 @@ constexpr      gray operator""      _gray ( long double v )  {return       gray 
 constexpr   sievert operator""   _sievert ( long double v )  {return    sievert {static_cast<double>(v)};}
 constexpr     katal operator""     _katal ( long double v )  {return      katal {static_cast<double>(v)};}
 
-using namespace convert;
-
-//temperature
-constexpr    kelvin operator""    _celsius ( long double v ){ return     kelvin {static_cast<double>(celsiusToKelvin(v))};}
-constexpr    kelvin operator"" _fahrenheit ( long double v ){ return     kelvin {static_cast<double>(fahrenheitToKelvin(v))};}
-//length
-constexpr     metre operator""       _feed ( long double v ){ return     metre {static_cast<double>(feedToMetre(v))};}
-constexpr     metre operator""       _mile ( long double v ){ return     metre {static_cast<double>(mileToMetre(v))};}
-constexpr     metre operator""       _yard ( long double v ){ return     metre {static_cast<double>(yardToMetre(v))};}
-//mass
-constexpr  kilogram operator""      _pound ( long double v ){ return   kilogram {static_cast<double>(poundToKilogram(v))};}
-constexpr  kilogram operator""      _ounce ( long double v ){ return   kilogram {static_cast<double>(ounceToKilogram(v))};}
-//time
-constexpr  second operator""      _minute ( long double v ){ return   second {static_cast<double>(minuteTosecond(v))};}
-constexpr  second operator""        _hour ( long double v ){ return   second {static_cast<double>(hourTosecond(v))};}
-constexpr  second operator""         _day ( long double v ){ return   second {static_cast<double>(dayTosecond(v))};}
-//energy
-constexpr  joule operator""      _calorie ( long double v ){ return   second {static_cast<double>(calorieToJoules(v))};}
-constexpr  joule operator""    _watt_hour ( long double v ){ return   second {static_cast<double>(watt_hourToJoules(v))};}
-//volume
-constexpr metre_cubed operator"" _litres      ( long double v )         {return  metre_cubed {static_cast<double>(litreToCubicMetre(v))};}
-constexpr metre_cubed operator"" _millilitre ( long double v )          {return  metre_cubed {static_cast<double>(litreToCubicMetre(milli(v)))};}
-constexpr metre_cubed operator"" _cubic_centimeteres ( long double v )  {return  metre_cubed {static_cast<double>(cubicCentimetreToCubicMetre(v))};}
-constexpr metre_cubed operator"" _gallons ( long double v )             {return  metre_cubed {static_cast<double>(gallonsToCubicMetre(v))};}
-//special case mass since baseunit is prefixed with 'kilo'
-constexpr kilogram operator"" _microgram ( long double v )  {return  kilogram {static_cast<double>(helper::rescale<std::micro,std::kilo>(v))};}
-constexpr kilogram operator"" _milligram ( long double v )  {return  kilogram {static_cast<double>(helper::rescale<std::milli,std::kilo>(v))};}
-constexpr kilogram operator""      _gram ( long double v )  {return  kilogram {static_cast<double>(helper::rescale<std::ratio<1>,std::kilo>(v))};}
-//concentration
-constexpr unitless operator"" _parts_per_million ( long double v )  {return  unitless {static_cast<double>(micro(v))};}
-constexpr unitless operator"" _percent ( long double v )            {return  unitless {static_cast<double>(centi(v))};}
-
+constexpr kelvin      operator"" _celsius ( long double v ){ return celsius (static_cast<double>(v));}
+constexpr kelvin      operator"" _fahrenheit ( long double v ){ return fahrenheit (static_cast<double>(v));}
+constexpr meter       operator"" _feed ( long double v ){ return feed (static_cast<double>(v));}
+constexpr meter       operator"" _mile ( long double v ){ return mile (static_cast<double>(v));}
+constexpr meter       operator"" _yard ( long double v ){ return yard (static_cast<double>(v));}
+constexpr kilogram    operator"" _pound ( long double v ){ return pound (static_cast<double>(v));}
+constexpr kilogram    operator"" _ounce ( long double v ){ return ounce (static_cast<double>(v));}
+constexpr kilogram    operator"" _gram ( long double v ){ return gram (static_cast<double>(v));}
+constexpr second      operator"" _minute ( long double v ){ return minute (static_cast<double>(v));}
+constexpr second      operator"" _hour ( long double v ){ return hour (static_cast<double>(v));}
+constexpr second      operator"" _day ( long double v ){ return day (static_cast<double>(v));}
+constexpr joule       operator"" _calorie ( long double v ){ return calorie (static_cast<double>(v));}
+constexpr joule       operator"" _watt_hour ( long double v ){ return watt_hour (static_cast<double>(v));}
+constexpr meter_cubed operator"" _litre ( long double v ){ return litre (static_cast<double>(v));}
+constexpr meter_cubed operator"" _gallons ( long double v ){ return gallons (static_cast<double>(v));}
+constexpr unitless    operator"" _parts_per_million ( long double v ){ return parts_per_million (static_cast<double>(v));}
+constexpr unitless    operator"" _percent ( long double v ){ return percent (static_cast<double>(v));}
 
 }
 
 //constexpr ampere example = ampere{milli(100.0)};
 
 template<typename U> constexpr const char* unitSymbol();
-template<> inline constexpr const char* unitSymbol<   u::metre>(){ return "m";}
+template<> inline constexpr const char* unitSymbol<   u::meter>(){ return "m";}
 template<> inline constexpr const char* unitSymbol<u::kilogram>(){ return "kg";}
 template<> inline constexpr const char* unitSymbol<  u::second>(){ return "s";}
 template<> inline constexpr const char* unitSymbol<  u::ampere>(){ return "A";}

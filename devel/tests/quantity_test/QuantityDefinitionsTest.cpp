@@ -21,11 +21,11 @@ static_assert(near(1.0_fahrenheit,  255.92778_kelvin),"");
 static_assert(farad{kilo(2.0)}==farad{2000.0},"");
 
 static_assert(2001.0_gram==kilogram{2.001},"");
-static_assert(2002.0_milligram==2.002_gram,"");
-static_assert(2003.0_microgram==2.003_milligram,"");
+static_assert(milli(gram(2002.0))==2.002_gram,"");
+static_assert(micro(gram(2003.0))==milli(gram(2.003)),"");
 
-static_assert(2004.0_litres==metre_cubed{2.004},"");
-static_assert(2005.0_millilitre==2.005_litres,"");
+static_assert(2004.0_litre==meter_cubed{2.004},"");
+static_assert(milli(2005.0_litre)==2.005_litre,"");
 
 using namespace convert;
 
