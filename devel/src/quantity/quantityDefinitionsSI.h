@@ -4,7 +4,8 @@
 #include <src/unit/unitHelper.h>
 #include <src/unit/unitOperators.h>
 #include <src/unit/unitScaling.h>
-#include <src/quantity/quantityOperators.h>
+#include "quantityOperators.h"
+#include "quantityMath.h"
 
 #include <ratio>
 #include <ostream>
@@ -102,50 +103,40 @@ using metre_cubed = Quantity<u::metre_cubed, def>;
 
 
 
+namespace convert {
 
-namespace conversion {
+template<typename T> constexpr T celsiusToKelvin(T v ) { return static_cast<double>(v+273.15); }
+template<typename T> constexpr T fahrenheitToKelvin(T v ) { return (v+459.67)*5.0/9.0; }
 
-constexpr long double kilogramsPerPound = 0.45359237;
-constexpr long double zeroDegreeCelsiusInKelvin = 273.15;
+template<typename T> constexpr T feedToMetre(T v ){ return static_cast<double>(v*0.3048); }
+template<typename T> constexpr T mileToMetre(T v ){ return static_cast<double>(v*1609.34); }
+template<typename T> constexpr T yardToMetre(T v ){ return static_cast<double>(v*0.9144); }
+
+template<typename T> constexpr T poundToKilogram(T v ){ return static_cast<double>(v*0.45359237); }
+template<typename T> constexpr T ounceToKilogram(T v ){ return static_cast<double>(v*0.0283495); }
 
 
-constexpr double fahrenheitToKelvin(long double v ) { return static_cast<double>((v+459.67)*(5.0/9.0)); }
-constexpr double celsiusToKelvin(long double v ) { return static_cast<double>(v+zeroDegreeCelsiusInKelvin); }
-constexpr double poundToKilogram(long double v ) { return static_cast<double>(v*kilogramsPerPound); }
+template<typename T> constexpr T minuteTosecond(T v ){ return static_cast<double>(v*60.0); }
+template<typename T> constexpr T hourTosecond(T v ){ return static_cast<double>(v*60.0*60.0); }
+template<typename T> constexpr T dayTosecond(T v ){ return static_cast<double>(v*60.0*60.0*24); }
+
+template<typename T> constexpr T calorieToJoules(T v ){ return static_cast<double>(v*4184.0); }
+template<typename T> constexpr T watt_hourToJoules(T v ){ return static_cast<double>(v*3600.0); }
+
+template<typename T> constexpr T litreToCubicMetre(T v ){ return static_cast<double>(v*0.001); }
+template<typename T> constexpr T cubicCentimetreToCubicMetre(T v ){ return static_cast<double>(v*1.0e-6); }
+template<typename T> constexpr T gallonsToCubicMetre(T v ){ return static_cast<double>(v*0.00378541); }
+
+}
+
+
+namespace mathConstant {
+
+constexpr auto pi = unitless{3.141592653589793238462643383279502884};
 
 }
 
-namespace constant {
 
-constexpr   unitless operator"" _number ( long double v )  {return unitless {static_cast<double>(v)};}
-
-constexpr long double e = 2.718281828459045235360287471352662497757247093699959574966L;
-constexpr long double exp2 = 7.389056098930650227230427460575007813180315570551847324087L;
-constexpr long double ln2 = 0.693147180559945309417232121458176568075500134360255254120L;
-constexpr long double pi_ld = 3.141592653589793238462643383279502884L;
-
-constexpr auto pi = unitless{pi_ld};
-
-constexpr auto avogadro = 6.022140857E+23_number / mole{1};
-constexpr auto boltzmann = 1.38064852E-23_number * joule{1} / kilogram{1};
-constexpr auto classicalElectronRadius = 2.8179403227E-15_number * metre{1};
-constexpr auto conductanceQuantum = 7.7480917310E-5_number * siemens{1};
-constexpr auto dirac = 1.054571800E-34_number * joule{1} * second{1};
-constexpr auto electric = 8.854187817E-12_number * farad{1} / metre{1};
-constexpr auto electronMass = 9.10938356E-31_number * kilogram{1};
-constexpr auto elementaryCharge = 1.6021766208E-19_number * coulomb{1};
-constexpr auto faraday = 96485.33289_number * coulomb{1} / mole{1};
-constexpr auto fineStructure = 7.2973525664E-3_number;
-constexpr auto gravitation = 6.67408E-11_number * metre{1} * metre{1} * metre{1} / kilogram{1} / second{1} / second{1};
-constexpr auto lightSpeed = 2.99792458E8_number * metre{1} / second{1};
-constexpr auto magnetic = 12.566370614E-7_number * newton{1} / ampere{1} / ampere{1};
-constexpr auto magneticFluxQuantum = 2.067833831E-15_number * weber{1};
-constexpr auto molarGas = 8.3144598_number * joule{1} / mole{1} / kelvin{1};
-constexpr auto planck = 6.626070040E-34_number * joule{1} * second{1};
-constexpr auto rydberg = 10973731.568508_number / metre{1};
-constexpr auto stefanBoltzmann = 5.670367E-8_number * watt{1} / metre{1} / metre{1} / kelvin{1} / kelvin{1} / kelvin{1} / kelvin{1};
-
-}
 
 namespace literals {
 
@@ -185,23 +176,37 @@ constexpr      gray operator""      _gray ( long double v )  {return       gray 
 constexpr   sievert operator""   _sievert ( long double v )  {return    sievert {static_cast<double>(v)};}
 constexpr     katal operator""     _katal ( long double v )  {return      katal {static_cast<double>(v)};}
 
-constexpr    kelvin operator""    _celsius ( long double v ){ return     kelvin {conversion::celsiusToKelvin(v)};}
-constexpr  kilogram operator""      _pound ( long double v ){ return   kilogram {conversion::poundToKilogram(v)};}
-constexpr     farad operator""  _kilofarad ( long double v ){ return      farad {static_cast<double>(kilo(v))};}
-constexpr    kelvin operator"" _fahrenheit ( long double v ){ return     kelvin {conversion::fahrenheitToKelvin(v)}; }
+using namespace convert;
 
-
+//temperature
+constexpr    kelvin operator""    _celsius ( long double v ){ return     kelvin {static_cast<double>(celsiusToKelvin(v))};}
+constexpr    kelvin operator"" _fahrenheit ( long double v ){ return     kelvin {static_cast<double>(fahrenheitToKelvin(v))};}
+//length
+constexpr     metre operator""       _feed ( long double v ){ return     metre {static_cast<double>(feedToMetre(v))};}
+constexpr     metre operator""       _mile ( long double v ){ return     metre {static_cast<double>(mileToMetre(v))};}
+constexpr     metre operator""       _yard ( long double v ){ return     metre {static_cast<double>(yardToMetre(v))};}
+//mass
+constexpr  kilogram operator""      _pound ( long double v ){ return   kilogram {static_cast<double>(poundToKilogram(v))};}
+constexpr  kilogram operator""      _ounce ( long double v ){ return   kilogram {static_cast<double>(ounceToKilogram(v))};}
+//time
+constexpr  second operator""      _minute ( long double v ){ return   second {static_cast<double>(minuteTosecond(v))};}
+constexpr  second operator""        _hour ( long double v ){ return   second {static_cast<double>(hourTosecond(v))};}
+constexpr  second operator""         _day ( long double v ){ return   second {static_cast<double>(dayTosecond(v))};}
+//energy
+constexpr  joule operator""      _calorie ( long double v ){ return   second {static_cast<double>(calorieToJoules(v))};}
+constexpr  joule operator""    _watt_hour ( long double v ){ return   second {static_cast<double>(watt_hourToJoules(v))};}
+//volume
+constexpr metre_cubed operator"" _litres      ( long double v )         {return  metre_cubed {static_cast<double>(litreToCubicMetre(v))};}
+constexpr metre_cubed operator"" _millilitre ( long double v )          {return  metre_cubed {static_cast<double>(litreToCubicMetre(milli(v)))};}
+constexpr metre_cubed operator"" _cubic_centimeteres ( long double v )  {return  metre_cubed {static_cast<double>(cubicCentimetreToCubicMetre(v))};}
+constexpr metre_cubed operator"" _gallons ( long double v )             {return  metre_cubed {static_cast<double>(gallonsToCubicMetre(v))};}
 //special case mass since baseunit is prefixed with 'kilo'
-constexpr kilogram operator"" _microgram ( long double v )  {return  kilogram {helper::rescale<std::micro,std::kilo>(static_cast<double>(v))};}
-constexpr kilogram operator"" _milligram ( long double v )  {return  kilogram {helper::rescale<std::milli,std::kilo>(static_cast<double>(v))};}
-constexpr kilogram operator"" _gram      ( long double v )  {return  kilogram {helper::rescale<std::ratio<1>,std::kilo>(static_cast<double>(v))};}
-
-template<typename ratio>
-using ratio_cubed = std::ratio_multiply< std::ratio_multiply<ratio,ratio>,ratio>;
-
-//custom units
-constexpr metre_cubed operator"" _litre      ( long double v )  {return  metre_cubed {helper::rescaleTo1<ratio_cubed<std::deci>>(static_cast<double>(v))};}
-constexpr metre_cubed operator"" _millilitre ( long double v )  {return  metre_cubed {helper::rescaleTo1<ratio_cubed<std::centi>>(static_cast<double>(v))};}
+constexpr kilogram operator"" _microgram ( long double v )  {return  kilogram {static_cast<double>(helper::rescale<std::micro,std::kilo>(v))};}
+constexpr kilogram operator"" _milligram ( long double v )  {return  kilogram {static_cast<double>(helper::rescale<std::milli,std::kilo>(v))};}
+constexpr kilogram operator""      _gram ( long double v )  {return  kilogram {static_cast<double>(helper::rescale<std::ratio<1>,std::kilo>(v))};}
+//concentration
+constexpr unitless operator"" _parts_per_million ( long double v )  {return  unitless {static_cast<double>(micro(v))};}
+constexpr unitless operator"" _percent ( long double v )            {return  unitless {static_cast<double>(centi(v))};}
 
 
 }
@@ -241,7 +246,6 @@ template<> inline void print_unit<      u::lux>(std::ostream& s){ s<<"Lx"; }
 template<> inline void print_unit<     u::gray>(std::ostream& s){ s<<"Gy"; }
 //template<> inline void print_unit<  sievert>(std::ostream& s){ s<<"Sv"; }
 template<> inline void print_unit<    u::katal>(std::ostream& s){ s<<"ka"; }
-
 
 }
 
