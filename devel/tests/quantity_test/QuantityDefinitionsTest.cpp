@@ -36,6 +36,8 @@ static_assert(near(fahrenheit(100.0),310.92777777_n * kelvin),"");
 static_assert(near(celsius(100.0),373.15_n * kelvin),"");
 static_assert(near(5.5_n * pound, 2.494758035_n * kilogram),"");
 
+static_assert(2.0_n * math::square(meter) == 20000.0_n * math::square(centi(meter)),"");
+
 
 QuantityDefinitionsTest::QuantityDefinitionsTest()
 {

@@ -137,22 +137,27 @@ constexpr      t::gray gray{1};
 constexpr   t::sievert sievert{1};
 constexpr     t::katal katal{1};
 
-
-constexpr       t::meter feed{0.3048};
-constexpr       t::meter mile{1609.34};
-constexpr       t::meter yard{0.9144};
-constexpr    t::kilogram pound{0.45359237};
-constexpr    t::kilogram ounce{0.0283495};
+//according to https://www.nist.gov/sites/default/files/documents/pml/wmd/metric/SP1038.pdf
+constexpr       t::meter inch{centi(2.54)}; //(ft)
+constexpr       t::meter food{0.3048}; //(ft)
+constexpr       t::meter mile{1609.344}; //international (5280 ft)(mi)
+constexpr       t::meter yard{0.9144}; //(yd)
+constexpr    t::kilogram pound{0.45359237}; //avoirdupois
+constexpr    t::kilogram ounce{0.02834952}; //avoirdupois
 constexpr    t::kilogram gram{helper::rescale<std::ratio<1>,std::kilo>(1.0)};
 constexpr      t::second minute{60};
 constexpr      t::second hour{60*60};
 constexpr      t::second day{60*60*24};
-constexpr       t::joule calorie{4184.0};
+constexpr       t::joule calorie{4.184}; //pyhsical unit!
 constexpr       t::joule watt_hour{3600};
 constexpr t::meter_cubed liter{0.001};
-constexpr t::meter_cubed gallons{0.00378541};
+constexpr t::meter_cubed gallon{3.785412 * 0.001};
+constexpr      t::pascal bar{kilo(100)};
 constexpr    t::unitless parts_per_million{micro(1.0)};
 constexpr    t::unitless percent{centi(1.0)};
+
+
+
 
 //temperature
 constexpr    t::kelvin     celsius ( double v ){ return t::kelvin {static_cast<double>(v+273.15)};}
