@@ -31,31 +31,32 @@ Initial release.
 
 # Description
 
-The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure. And having the dimension attached to a value also makes stating the intent easier.
+The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure.
 
 ## Motivation
 There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [martinmoene/PhysUnits-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11). A more comprehensive list can be found at [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11#other-libraries). All these implementations consist of a considerable amount of code (boost >4000 sloc, nholt/unit 3800 sloc, PysUnit 2500 sloc) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
 
 This library tries to adress the issue by beeing small (500 sloc*) and simple to allow users understand the code and adjust it to their needs more easily.  
 
-Note that 500 sloc includes SI-Unit-Definitions an input/output. The [essential code without input/output and predefined units](https://github.com/tonypilz/units/blob/master/devel/tools/SingleFileMinimalExample.h) consists of 250sloc.
+*Note that 500 sloc includes SI-Unit-Definitions an input/output and excludes [physicalConstants.h](include/physicalConstants.h). The [essential code without input/output and predefined units](https://github.com/tonypilz/units/blob/master/devel/tools/SingleFileMinimalExample.h) consists of 250sloc.
 
 # Features
 The library can be used for
- - dimensional analysis on unrestricted value types (double, int, complex ...)
+ - dimensional analysis on unrestricted value-types (double, int, complex ...)
  - printing dimensioned values
  - reading dimensioned values
+ - convert units of measure
  
-It is easily extendable to special needs, mostly constexpr, well tested and incurs no runtime overhead (at -O1).
+It is designed to be extendable to special needs. Its mostly constexpr, well tested and incurs no runtime overhead (at optimization -O1). All constants from [nist](http://physics.nist.gov/cuu/Constants/Table/allascii.txt) are available (see [physicalConstants.h](include/physicalConstants.h)).
  
 # Limitations
 Storing values in non-base-units (e.g. millisecs) cannot be done with this library (see [Representation in non-base-units](#representation-in-non-base-units)). 
 
-Also printing and reading is rather simple and in terms of baseunits, so eg
+Therefore printing and reading is done in terms of baseunits, so eg
 ```cpp
 cout<<3.0_milliNewton; // prints "0.003N"
 ```
-More advanced printing can be added if reqired.
+More advanced printing and reading can be added if reqired.
  
 # Getting Started Guide
 The library consists of a single file ([units.h](include/units.h)), plus tests. To incorporate the library into your project, simply copy the header into a location in your include path.
@@ -71,7 +72,7 @@ int main() {
     using namespace unit::literals;
 
 
-    newton force = 2.0_metre * 3.0_kilogram / math::square(2.0_second);
+    newton some_force = 2.0_metre * 3.0_kilogram / math::square(2.0_second);
 
     std::cout<<force<<"\n"; //prints "1.5N"
     
@@ -79,21 +80,21 @@ int main() {
 }
 ```
 
-The quantity variable `force` is composed of a double having the value = `1.5` and a type beeing `newton`. As seen in this example, quantities can be used like doubles, an they should be used anywhere double values can be used.
+The variable `some_force` is a double value of `1.5` having a unit type `newton` attached to it. Quantities like `some_force` can be used like doubles, an they should be used anywhere double values can be used.
 
-To avoid mistakes, the variable `force` cannot be combined with pure doubles:
+To avoid mistakes, the variable `some_force` cannot be combined with pure doubles:
 
 ```cpp
-force = force + 2.0; // compile error
-force = force + 2.0_newton; // ok
+some_force = some_force + 2.0; // compile error
+some_force = some_force + 2.0_newton; // ok
 ``` 
-Also, `force` can only be combined with compatible units according to the rules of dimensional analysis
+Also, `some_force` can only be combined with compatible units according to the rules of dimensional analysis
 
 ```cpp
-force = force + 2.0_second; // compile error due to summing different units 
-force = force * 2.0_newton; // compile error due to return type mismatch 
+some_force = some_force + 2.0_second; // compile error due to summing different units 
+some_force = some_force * 2.0_newton; // compile error due to return type mismatch 
                             // return type is `newton^2`, which cannot be assigned to type 'newton'
-newton_squared force2 = force * 2.0_newton; // ok
+newton_squared some_force2 = some_force * 2.0_newton; // ok
 ```
 
 Note that `newton_squared` is currently not defined in the library, but [can be easily added](#defining-new-units) if desired.
@@ -142,23 +143,23 @@ double v = a.magnitude();
 
 # Defining New Units
 
-Units can be defined anywhere. The existing definitions can be found in namespace, just search for `namespace u` in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) to find example definitions.
+Units can be defined anywhere. The existing definitions can be found in namespace u in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h), just search there for `namespace u` to find example definitions.
 
 # Adding a new Math Function
 
-Math functions can be added anywhere. The existing math functions can be found in the namespace math, just search for `sqrt` in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) to find examples.
+Math functions can be added anywhere. The existing math functions can be found in the namespace math in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h), just search there for `sqrt` to find examples.
 
 # Representation in non-base-units
 
 The representation in non-base-units can be achived by defining a type which remembers its scale and behaves accordingly under aritmetic operations. Such a type is not part of the library.
 
-Note: One should be aware that this form of lazy rescaling might incur runtime overhead since rescaling has to happen each time two values with a different scale are combined.
+Note: One should be aware that this form of delayed rescaling might incur runtime overhead since rescaling has to happen each time two values with different scales are combined.
 
-One should also keep in mind that floating point types like double are especially designed for keeping track of their initial scale. So there should rarely be the need for lazy rescaling. 
+One should also keep in mind that floating point types like double are especially good at keeping track of their scale. So there should rarely be the need to customize their behaviour. 
 
 # Adjusting the Library
 
-The library can adjusted to special needs by adjusting the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file. The section to change starts with `namespace u` wich can be searched for. Everything below this line can be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
+The library is specially designed to be adjusted to special needs. It can be done by changing the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file, which begins at `namespace u` and which can be searched for. Everything below `namespace u` be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
 
 # Under the Hood
 
@@ -175,7 +176,7 @@ class Quantity {
 };
 ```
 
-The class `Quanitity` combines a magnitude-value and a unit-type. The class `unit` is a pure type wich is different for each physical dimension by storing the exponents of all possible base-units in its template parameter. The following example illustrates the idea:
+The class `Quanitity` combines a magnitude-value and a unit-type. The class `unit` is a pure type wich is different for each physical dimension by storing the exponents of all possible base-units in its template parameter. The following example illustrates the idea of units:
 
 ```cpp
 using metre    = Unit<1,0,0>;  // represents m^1 * kg^0 * s^0
@@ -189,7 +190,7 @@ using newton_force = Unit<1,1,-2> // m^1 * kg^1 * s^-2
 };
 ```
 
-A Quantity of 5 newton would thus be defined as 
+With these definitions a value of 5 newton would therefore be defined as 
 
 ```cpp
 Quantity< Unit<1,1,-2>, double > q{5};
@@ -198,14 +199,14 @@ Quantity< Unit<1,1,-2>, double > q{5};
 or
 
 ```cpp
-Quantity< newton_force > q{5};
+Quantity< newton_force, double > q{5};
 ```
 
 Note that the definitions `metre`, `kilogram` and `second` are arbitraritly chosen and can be changed as well as their count.
 
 The remaining library code past those 2 classes deals mainly with supporting them:
- - deriving units from operators eg `Unit<1,0,0> * Unit<0,0,1>` -> `Unit<1,0,1>`
- - deriving units from math functions eg `sqrt< Unit<6,0,0> >()` -> `Unit<3,0,0>`
+ - deriving return unit-types for operators eg `Unit<1,0,0> * Unit<0,0,1>` -> `Unit<1,0,1>`
+ - deriving return unit-types for math functions eg `sqrt< Unit<6,0,0> >()` -> `Unit<3,0,0>`
  - printing units eg `print_unit< Unit<0,2,0> >();` -> prints `kg^2`
  - providing operators and math for class `Quantity`
  - conversions between units and scales
