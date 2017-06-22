@@ -7,6 +7,7 @@
 
 namespace singleFileSi {
 
+
 namespace unit {
 
 template <typename Unit, typename MagnitudeRepresentation = double>
@@ -57,6 +58,7 @@ struct Unit;
 
 namespace helper {
 
+
 template <typename Unit, ExponentIndex i>
 constexpr TExponent exponent() {
     return Unit::template exponent_value<i>();
@@ -94,17 +96,17 @@ struct BaseUnitGen<-1, index, exponents...> {
 template <int dimension, int lastDimension>
 using BaseUnit = typename helper::baseunit::BaseUnitGen<lastDimension, dimension>::type;
 
-template <TExponent... dimensionExponents>
-struct Unit {
+template<TExponent ... dimensionExponents >
+struct Unit{
+
     using classtype = Unit<dimensionExponents...>;
 
-    static constexpr unsigned exponent_count() { return sizeof...(dimensionExponents); }
+    static constexpr unsigned exponent_count() {return sizeof...(dimensionExponents);}
 
-    template <ExponentIndex i>
-    static constexpr TExponent exponent_value() {
-        return helper::nthElement::NthElement<i, dimensionExponents...>::value();
-    }
+    template<ExponentIndex i>
+    static constexpr TExponent exponent_value() { return helper::nthElement::NthElement<i,dimensionExponents...>::value(); }
 };
+
 
 namespace helper {
 
@@ -150,6 +152,9 @@ using raised_unit = typename helper::op::UnitOperator<U1::exponent_count() - 1, 
 
 template <typename U>
 using sqare_unit = product_unit<U, U>;
+
+
+
 
 template <typename TDst, typename QSrc>
 constexpr Quantity<typename QSrc::unit, TDst> static_unit_cast(QSrc const& l) {
@@ -234,40 +239,63 @@ template <typename LU, typename LT>
 constexpr Quantity<LU, LT> operator-(Quantity<LU, LT> const& l) {
     return Quantity<LU, LT>{-l.magnitude()};
 }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespace unit {
 namespace math {
 
 template <typename U, typename T>
-constexpr Quantity<U, decltype(std::abs(T{}))> abs(Quantity<U, T> const& q) {
+constexpr Quantity<U, decltype(std::abs(T{}))>
+abs(Quantity<U, T> const& q) {
     return Quantity<U, decltype(std::abs(T{}))>{std::abs(q.magnitude())};
 }
 
 template <typename U, typename T>
-constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))> sqrt(Quantity<U, T> const& q) {
+constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>
+sqrt(Quantity<U, T> const& q) {
     return Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>{std::sqrt(q.magnitude())};
 }
 
 namespace helper {
 template <typename power, typename T>
-constexpr decltype(std::pow(T{}, T{})) pow_impl(T const& v) {
+constexpr decltype(std::pow(T{}, T{}))
+pow_impl(T const& v) {
     return std::pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
 }
 }
 
 template <typename power, typename U, typename T>
-constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))> pow(Quantity<U, T> const& q) {
+constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>
+pow(
+    Quantity<U, T> const& q)
+{
     return Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>{
         helper::pow_impl<power, T>(q.magnitude())};
 }
 
 template <typename U, typename T>
-constexpr auto cube(Quantity<U, T> const& q)
+constexpr auto
+cube(Quantity<U, T> const& q)
     -> Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())> {
     return Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())>{
         (q.magnitude() * q.magnitude()) * q.magnitude()};
 }
 
 template <typename U, typename T>
-constexpr auto square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
+constexpr auto
+square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
     return Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>{q.magnitude() * q.magnitude()};
 }
 }
@@ -381,16 +409,16 @@ namespace u {
 
 
 
-using unitless = BaseUnit<-1,7>;
+using unitless = BaseUnit<-1,6>;
 
-using meter = BaseUnit<0,7>;
-using kilogram = BaseUnit<1,7>;
-using second = BaseUnit<2,7>;
-using ampere = BaseUnit<3,7>;
-using kelvin = BaseUnit<4,7>;
-using mole = BaseUnit<5,7>;
-using candela = BaseUnit<6,7>;
-using foo = BaseUnit<7,7>;
+using meter = BaseUnit<0,6>;
+using kilogram = BaseUnit<1,6>;
+using second = BaseUnit<2,6>;
+using ampere = BaseUnit<3,6>;
+using kelvin = BaseUnit<4,6>;
+using mole = BaseUnit<5,6>;
+using candela = BaseUnit<6,6>;
+
 
 
 
@@ -426,128 +454,116 @@ using mol_inv = quotient_unit< unitless, mole>;
 
 }
 
-using def = double;
+namespace t {
+
+    using def = double;
 
 
-using unitless = Quantity<u::unitless, def>;
-using meter = Quantity<u::meter, def>;
-using kilogram = Quantity<u::kilogram, def>;
-using second = Quantity<u::second, def>;
-using ampere = Quantity<u::ampere, def>;
-using kelvin = Quantity<u::kelvin, def>;
-using mole = Quantity<u::mole, def>;
-using candela = Quantity<u::candela, def>;
-using foo = Quantity<u::foo, def>;
+    using unitless = Quantity<u::unitless, def>;
+    using meter = Quantity<u::meter, def>;
+    using kilogram = Quantity<u::kilogram, def>;
+    using second = Quantity<u::second, def>;
+    using ampere = Quantity<u::ampere, def>;
+    using kelvin = Quantity<u::kelvin, def>;
+    using mole = Quantity<u::mole, def>;
+    using candela = Quantity<u::candela, def>;
 
 
-using radian = Quantity<u::radian, def>;
-using steradian = Quantity<u::steradian, def>;
-using hertz = Quantity<u::hertz, def>;
-using newton = Quantity<u::newton, def>;
-using pascal = Quantity<u::pascal, def>;
-using joule = Quantity<u::joule, def>;
-using watt = Quantity<u::watt, def>;
-using coulomb = Quantity<u::coulomb, def>;
-using volt = Quantity<u::volt, def>;
-using farad = Quantity<u::farad, def>;
-using ohm = Quantity<u::ohm, def>;
-using siemens = Quantity<u::siemens, def>;
-using weber = Quantity<u::weber, def>;
-using tesla = Quantity<u::tesla, def>;
-using henry = Quantity<u::henry, def>;
-using lumen = Quantity<u::lumen, def>;
-using lux = Quantity<u::lux, def>;
-using becquerel = Quantity<u::becquerel, def>;
-using gray = Quantity<u::gray, def>;
-using sievert = Quantity<u::sievert, def>;
-using katal = Quantity<u::katal, def>;
+    using radian = Quantity<u::radian, def>;
+    using steradian = Quantity<u::steradian, def>;
+    using hertz = Quantity<u::hertz, def>;
+    using newton = Quantity<u::newton, def>;
+    using pascal = Quantity<u::pascal, def>;
+    using joule = Quantity<u::joule, def>;
+    using watt = Quantity<u::watt, def>;
+    using coulomb = Quantity<u::coulomb, def>;
+    using volt = Quantity<u::volt, def>;
+    using farad = Quantity<u::farad, def>;
+    using ohm = Quantity<u::ohm, def>;
+    using siemens = Quantity<u::siemens, def>;
+    using weber = Quantity<u::weber, def>;
+    using tesla = Quantity<u::tesla, def>;
+    using henry = Quantity<u::henry, def>;
+    using lumen = Quantity<u::lumen, def>;
+    using lux = Quantity<u::lux, def>;
+    using becquerel = Quantity<u::becquerel, def>;
+    using gray = Quantity<u::gray, def>;
+    using sievert = Quantity<u::sievert, def>;
+    using katal = Quantity<u::katal, def>;
 
 
-using meter_cubed = Quantity<u::meter_cubed, def>;
-
-using mol_inv = Quantity<u::mol_inv, def>;
-
-
-
-namespace conversion {
-
-constexpr long double kilogramsPerPound = 0.45359237;
-constexpr long double zeroDegreeCelsiusInKelvin = 273.15;
-
-
-constexpr double fahrenheitToKelvin(long double v ) { return static_cast<double>((v+459.67)*(5.0/9.0)); }
-constexpr double celsiusToKelvin(long double v ) { return static_cast<double>(v+zeroDegreeCelsiusInKelvin); }
-constexpr double poundToKilogram(long double v ) { return static_cast<double>(v*kilogramsPerPound); }
-
+    using meter_cubed = Quantity<u::meter_cubed, def>;
 }
 
-namespace constants {
 
-constexpr unitless pi{ 3.14159265359 };
-constexpr mol_inv Avogadro{ 6.022140857e23 };
+constexpr t::unitless unitless{1};
+constexpr t::unitless number{1};
+constexpr t::meter meter{1};
+constexpr t::kilogram kilogram{1};
+constexpr t::second second{1};
+constexpr t::ampere ampere{1};
+constexpr t::kelvin kelvin{1};
+constexpr t::mole mole{1};
+constexpr t::candela candela{1};
 
-}
+
+constexpr t::radian radian{1};
+constexpr t::steradian steradian{1};
+constexpr t::hertz hertz{1};
+constexpr t::newton newton{1};
+constexpr t::pascal pascal{1};
+constexpr t::joule joule{1};
+constexpr t::watt watt{1};
+constexpr t::coulomb coulomb{1};
+constexpr t::volt volt{1};
+constexpr t::farad farad{1};
+constexpr t::ohm ohm{1};
+constexpr t::siemens siemens{1};
+constexpr t::weber weber{1};
+constexpr t::tesla tesla{1};
+constexpr t::henry henry{1};
+constexpr t::lumen lumen{1};
+constexpr t::lux lux{1};
+constexpr t::becquerel becquerel{1};
+constexpr t::gray gray{1};
+constexpr t::sievert sievert{1};
+constexpr t::katal katal{1};
+
+
+constexpr t::meter inch{centi(2.54)};
+constexpr t::meter food{0.3048};
+constexpr t::meter mile{1609.344};
+constexpr t::meter yard{0.9144};
+constexpr t::kilogram pound{0.45359237};
+constexpr t::kilogram ounce{0.02834952};
+constexpr t::kilogram gram{helper::rescale<std::ratio<1>,std::kilo>(1.0)};
+constexpr t::second minute{60};
+constexpr t::second hour{60*60};
+constexpr t::second day{60*60*24};
+constexpr t::joule calorie{4.184};
+constexpr t::joule watt_hour{3600};
+constexpr t::meter_cubed liter{0.001};
+constexpr t::meter_cubed gallon{3.785412 * 0.001};
+constexpr t::pascal bar{kilo(100)};
+constexpr t::unitless parts_per_million{micro(1.0)};
+constexpr t::unitless percent{centi(1.0)};
+
+
+
+
+
+constexpr t::kelvin celsius ( double v ){ return t::kelvin {static_cast<double>(v+273.15)};}
+constexpr t::kelvin fahrenheit ( double v ){ return t::kelvin {static_cast<double>((v+459.67)*5.0/9.0)};}
+
 
 namespace literals {
 
-
-constexpr unitless operator"" _unitless ( long double v ) {return unitless {static_cast<double>(v)};}
-constexpr unitless operator"" _ul ( long double v ) {return unitless {static_cast<double>(v)};}
-
-constexpr meter operator"" _meter ( long double v ) {return meter {static_cast<double>(v)};}
-constexpr kilogram operator"" _kilogram ( long double v ) {return kilogram {static_cast<double>(v)};}
-constexpr second operator"" _second ( long double v ) {return second {static_cast<double>(v)};}
-constexpr ampere operator"" _ampere ( long double v ) {return ampere {static_cast<double>(v)};}
-constexpr kelvin operator"" _kelvin ( long double v ) {return kelvin {static_cast<double>(v)};}
-constexpr mole operator"" _mole ( long double v ) {return mole {static_cast<double>(v)};}
-constexpr candela operator"" _candela ( long double v ) {return candela {static_cast<double>(v)};}
-constexpr foo operator"" _foo ( long double v ) {return foo {static_cast<double>(v)};}
-
-
-
-constexpr radian operator"" _radian ( long double v ) {return radian {static_cast<double>(v)};}
-constexpr steradian operator"" _steradian ( long double v ) {return steradian {static_cast<double>(v)};}
-constexpr hertz operator"" _hertz ( long double v ) {return hertz {static_cast<double>(v)};}
-constexpr newton operator"" _newton ( long double v ) {return newton {static_cast<double>(v)};}
-constexpr pascal operator"" _pascal_ ( long double v ) {return pascal {static_cast<double>(v)};}
-constexpr joule operator"" _joule ( long double v ) {return joule {static_cast<double>(v)};}
-constexpr watt operator"" _watt ( long double v ) {return watt {static_cast<double>(v)};}
-constexpr coulomb operator"" _coulomb ( long double v ) {return coulomb {static_cast<double>(v)};}
-constexpr volt operator"" _volt ( long double v ) {return volt {static_cast<double>(v)};}
-constexpr farad operator"" _farad ( long double v ) {return farad {static_cast<double>(v)};}
-constexpr ohm operator"" _ohm ( long double v ) {return ohm {static_cast<double>(v)};}
-constexpr siemens operator"" _siemens ( long double v ) {return siemens {static_cast<double>(v)};}
-constexpr weber operator"" _weber ( long double v ) {return weber {static_cast<double>(v)};}
-constexpr tesla operator"" _tesla ( long double v ) {return tesla {static_cast<double>(v)};}
-constexpr henry operator"" _henry ( long double v ) {return henry {static_cast<double>(v)};}
-constexpr lumen operator"" _lumen ( long double v ) {return lumen {static_cast<double>(v)};}
-constexpr lux operator"" _lux ( long double v ) {return lux {static_cast<double>(v)};}
-constexpr becquerel operator"" _becquerel ( long double v ) {return becquerel {static_cast<double>(v)};}
-constexpr gray operator"" _gray ( long double v ) {return gray {static_cast<double>(v)};}
-constexpr sievert operator"" _sievert ( long double v ) {return sievert {static_cast<double>(v)};}
-constexpr katal operator"" _katal ( long double v ) {return katal {static_cast<double>(v)};}
-
-constexpr kelvin operator"" _celsius ( long double v ){ return kelvin {conversion::celsiusToKelvin(v)};}
-constexpr kilogram operator"" _pound ( long double v ){ return kilogram {conversion::poundToKilogram(v)};}
-constexpr farad operator"" _kilofarad ( long double v ){ return farad {static_cast<double>(kilo(v))};}
-constexpr kelvin operator"" _fahrenheit ( long double v ){ return kelvin {conversion::fahrenheitToKelvin(v)}; }
-
-
-
-constexpr kilogram operator"" _microgram ( long double v ) {return kilogram {helper::rescale<std::micro,std::kilo>(static_cast<double>(v))};}
-constexpr kilogram operator"" _milligram ( long double v ) {return kilogram {helper::rescale<std::milli,std::kilo>(static_cast<double>(v))};}
-constexpr kilogram operator"" _gram ( long double v ) {return kilogram {helper::rescale<std::ratio<1>,std::kilo>(static_cast<double>(v))};}
-
-template<typename ratio>
-using ratio_cubed = std::ratio_multiply< std::ratio_multiply<ratio,ratio>,ratio>;
-
-
-constexpr meter_cubed operator"" _liter ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::deci>>(static_cast<double>(v))};}
-constexpr meter_cubed operator"" _milliliter ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::centi>>(static_cast<double>(v))};}
-
+constexpr t::unitless operator"" _unitless ( long double v ) {return t::unitless {static_cast<double>(v)};}
+constexpr t::unitless operator"" _number ( long double v ) {return t::unitless {static_cast<double>(v)};}
+constexpr t::unitless operator"" _n ( long double v ) {return t::unitless {static_cast<double>(v)};}
+constexpr t::newton operator"" _newton ( long double v ) {return t::newton {static_cast<double>(v)};}
 
 }
-
 
 
 template<typename U> constexpr const char* unitSymbol();
@@ -558,7 +574,6 @@ template<> inline constexpr const char* unitSymbol< u::ampere>(){ return "A";}
 template<> inline constexpr const char* unitSymbol< u::kelvin>(){ return "K";}
 template<> inline constexpr const char* unitSymbol< u::mole>(){ return "mol";}
 template<> inline constexpr const char* unitSymbol< u::candela>(){ return "cd";}
-template<> inline constexpr const char* unitSymbol< u::foo>(){ return "foo";}
 
 
 
@@ -584,7 +599,6 @@ template<> inline void print_unit< u::lux>(std::ostream& s){ s<<"Lx"; }
 template<> inline void print_unit< u::gray>(std::ostream& s){ s<<"Gy"; }
 
 template<> inline void print_unit< u::katal>(std::ostream& s){ s<<"ka"; }
-
 
 }
 

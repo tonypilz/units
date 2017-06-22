@@ -7,6 +7,7 @@
 
 namespace singleFileMinimalExample {
 
+
 namespace unit {
 
 template <typename Unit, typename MagnitudeRepresentation = double>
@@ -238,27 +239,40 @@ template <typename LU, typename LT>
 constexpr Quantity<LU, LT> operator-(Quantity<LU, LT> const& l) {
     return Quantity<LU, LT>{-l.magnitude()};
 }
+}
+
+
+
+
+
+
+
+namespace unit {
 namespace math {
 
 template <typename U, typename T>
-constexpr Quantity<U, decltype(std::abs(T{}))> abs(Quantity<U, T> const& q) {
+constexpr Quantity<U, decltype(std::abs(T{}))>
+abs(Quantity<U, T> const& q) {
     return Quantity<U, decltype(std::abs(T{}))>{std::abs(q.magnitude())};
 }
 
 template <typename U, typename T>
-constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))> sqrt(Quantity<U, T> const& q) {
+constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>
+sqrt(Quantity<U, T> const& q) {
     return Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>{std::sqrt(q.magnitude())};
 }
 
 namespace helper {
 template <typename power, typename T>
-constexpr decltype(std::pow(T{}, T{})) pow_impl(T const& v) {
+constexpr decltype(std::pow(T{}, T{}))
+pow_impl(T const& v) {
     return std::pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
 }
 }
 
 template <typename power, typename U, typename T>
-constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))> pow(
+constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>
+pow(
     Quantity<U, T> const& q)
 {
     return Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>{
@@ -266,14 +280,16 @@ constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{
 }
 
 template <typename U, typename T>
-constexpr auto cube(Quantity<U, T> const& q)
+constexpr auto
+cube(Quantity<U, T> const& q)
     -> Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())> {
     return Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())>{
         (q.magnitude() * q.magnitude()) * q.magnitude()};
 }
 
 template <typename U, typename T>
-constexpr auto square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
+constexpr auto
+square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
     return Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>{q.magnitude() * q.magnitude()};
 }
 }
@@ -317,23 +333,30 @@ using foo = BaseUnit<0, 0>;
 using foo_inv = quotient_unit<unitless, foo>;
 }
 
-using def = double;
+namespace t {
 
 
-using unitless = Quantity<u::unitless, def>;
-using foo = Quantity<u::foo, def>;
+using unitless = Quantity<u::unitless, double>;
+using foo = Quantity<u::foo, double>;
 
 
-using foo_inv = Quantity<u::foo_inv, def>;
+using foo_inv = Quantity<u::foo_inv, double>;
+}
+
+constexpr t::unitless number{1};
+constexpr t::foo foo{1};
+constexpr t::foo_inv foo_inv{1};
 
 namespace literals {
 
 
-constexpr unitless operator"" _unitless ( long double v ) {return unitless {static_cast<double>(v)};}
-constexpr foo operator"" _foo ( long double v ) {return foo {static_cast<double>(v)};}
+constexpr t::unitless operator"" _n ( long double v ) {return t::unitless {static_cast<double>(v)};}
+constexpr t::foo operator"" _foo ( long double v ) {return t::foo {static_cast<double>(v)};}
 
-
-constexpr foo_inv operator"" _foo_inv ( long double v ) {return foo_inv {static_cast<double>(v)};}
 }
 }
+
+
+
+
 }

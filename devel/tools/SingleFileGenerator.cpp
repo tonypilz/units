@@ -9,6 +9,15 @@
 //7. copy the unit-namespace to SingleFile.h
 //8. add includes
 //9. beautify everything except milli-block and everything starting at namespace u
+//10. fix forward decl to look again like
+//
+//            namespace std{ template<intmax_t, intmax_t > struct ratio;} => and remove this line
+//            namespace unit {
+//            namespace math {
+//11. compile everything
+//12. copy to include dir
+
+
 
 //#define _GLIBCXX_IOSFWD 1
 //#define _GLIBCXX_OSTREAM 1
@@ -29,6 +38,7 @@
 #include <src/quantity/quantityReading.h>
 #include <src/quantity/quantityPrinting.h>
 #include <src/quantity/quantityDefinitionsSI.h>
+
 
 //minimal
 //#include <src/unit/unitScaling.h>
