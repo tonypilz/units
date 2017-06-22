@@ -102,11 +102,11 @@ Note that `newton_squared` is currently not defined in the library, but [can be 
 Due to the dimensional checking, `auto` can savely be used, errors will be caught at compile-time
 
 ```cpp
-auto a = 2.0_n*metre;
-auto b = 3.0_n*metre; 
+auto a = 2.0_n*meter;
+auto b = 3.0_n*meter; 
 auto c = math::sqr(a*a + b*b);  // pytagoras intended
 
-auto force1 = c * 3.0_n*kilogram / math::square(2.0_second);
+auto force1 = c * 3.0_n*kilogram / math::square(2.0_n*second);
 auto force2 = 5.0_n*newton;
 
 force1 += force2; // compile error since force1 is of different type m*N
@@ -130,14 +130,14 @@ Sometimes there is the need to combine a unit with a unitless scalar:
 
 ```cpp
 double s = sin(45);
-auto a = 2.0_n*metre; 
+auto a = 2.0_n*meter; 
 auto c = a * number{s};
 ```
 
 For a fallback there is always to the option to extract the double value from the unit:
 
 ```cpp
-auto a = 2.0_n*metre; 
+auto a = 2.0_n*meter; 
 double v = a.magnitude();
 ```
 
