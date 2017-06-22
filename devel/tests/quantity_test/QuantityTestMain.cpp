@@ -145,6 +145,11 @@ void complex_math_test() //complex functions are not constexpr, therefore non-st
         assert(d.magnitude()<1.0e-14);
     }
 
+    {
+        const bool b = (cnewton{TComplex{1,2}} + Quantity<u::newton,double>{5}) == cnewton{TComplex{6,2}};
+        assert(b);
+    }
+
 }
 
 
