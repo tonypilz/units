@@ -54,12 +54,12 @@ Storing values in non-base-units (e.g. millisecs) cannot be done with this libra
 
 Therefore printing and reading is done in terms of baseunits, so eg
 ```cpp
-cout<<3.0_milliNewton; // prints "0.003N"
+cout << 3.0_n * milli(newton); // prints "0.003N"
 ```
 More advanced printing and reading can be added if reqired.
  
 # Getting Started Guide
-The library consists of a single file ([units.h](include/units.h)), plus tests. To incorporate the library into your project, simply copy the header into a location in your include path.
+The library consists of a single file ([units.h](include/units.h)). To incorporate the library into your project, simply copy the header into a location in your include path.
 
 Add `units.h` to your project, along with the `using` directive for literals which allows for a first simple example.
 
@@ -72,9 +72,9 @@ int main() {
     using namespace unit::literals;
 
 
-    newton some_force = 2.0_metre * 3.0_kilogram / math::square(2.0_second);
+    t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / math::square(2.0_n*second);
 
-    std::cout<<force<<"\n"; //prints "1.5N"
+    std::cout<<some_force<<"\n"; //prints "1.5N"
     
     return 0;
 }
@@ -85,16 +85,16 @@ The variable `some_force` is a double value of `1.5` having a unit type `newton`
 To avoid mistakes, the variable `some_force` cannot be combined with pure doubles:
 
 ```cpp
-some_force = some_force + 2.0; // compile error
-some_force = some_force + 2.0_newton; // ok
+some_force = some_force + 2.0;            // compile error
+some_force = some_force + 2.0_n*newton; // ok
 ``` 
 Also, `some_force` can only be combined with compatible units according to the rules of dimensional analysis
 
 ```cpp
-some_force = some_force + 2.0_second; // compile error due to summing different units 
-some_force = some_force * 2.0_newton; // compile error due to return type mismatch 
+some_force = some_force + 2.0_n*second; // compile error due to summing different units 
+some_force = some_force * 2.0_n*newton; // compile error due to return type mismatch 
                             // return type is `newton^2`, which cannot be assigned to type 'newton'
-newton_squared some_force2 = some_force * 2.0_newton; // ok
+newton_squared some_force2 = some_force * 2.0_n*newton; // ok
 ```
 
 Note that `newton_squared` is currently not defined in the library, but [can be easily added](#defining-new-units) if desired.
@@ -102,12 +102,12 @@ Note that `newton_squared` is currently not defined in the library, but [can be 
 Due to the dimensional checking, `auto` can savely be used, errors will be caught at compile-time
 
 ```cpp
-auto a = 2.0_metre;
-auto b = 3.0_metre; 
+auto a = 2.0_n*metre;
+auto b = 3.0_n*metre; 
 auto c = math::sqr(a*a + b*b);  // pytagoras intended
 
-auto force1 = c * 3.0_kilogram / math::square(2.0_second);
-auto force2 = 5.0_newton;
+auto force1 = c * 3.0_n*kilogram / math::square(2.0_second);
+auto force2 = 5.0_n*newton;
 
 force1 += force2; // compile error since force1 is of different type m*N
                   // since we forgot a 't' in 'sqr' making c of type meter^2  
@@ -115,12 +115,13 @@ force1 += force2; // compile error since force1 is of different type m*N
 
 The library provides some math functions (from <cmath>) which provide the respective unit transformations. If a math function is missing it can be [easily added](#adding-a-new-math-function) if desired.
 
-Converting units is also possible:
+Converting to base units is also possible:
 
 ```cpp
-auto m = 2.0_pound; //m == 0,907185 meters
-auto k = 0.0_celsius; // k == 273.15 kevlin
-second s{ milli(5.0) }; // s == 0.005 seconds
+auto m = 2.0_n*pound; //m == 0,907185 meters
+auto f = cube( 500.0_n * deci(inch) ); //f == 2.04838 m^3
+auto k = celsius(0); // k == 273.15 kevlin
+auto s = 5.0_n*milli(second); // s == 0.005 seconds
 ```
 
 If a conversion is missing it can be [easily added](#adding-a-new-math-function) if desired. Note that all units are always converted to their base-units. This default behaviour [can be changed](#representation-in-non-base-units).
@@ -129,14 +130,14 @@ Sometimes there is the need to combine a unit with a unitless scalar:
 
 ```cpp
 double s = sin(45);
-auto a = 2.0_metre; 
-auto c = a * unitless{s};
+auto a = 2.0_n*metre; 
+auto c = a * number{s};
 ```
 
 For a fallback there is always to the option to extract the double value from the unit:
 
 ```cpp
-auto a = 2.0_metre; 
+auto a = 2.0_n*metre; 
 double v = a.magnitude();
 ```
 
@@ -155,7 +156,7 @@ The representation in non-base-units can be achived by defining a type which rem
 
 Note: One should be aware that this form of delayed rescaling might incur runtime overhead since rescaling has to happen each time two values with different scales are combined.
 
-One should also keep in mind that floating point types like double are especially good at keeping track of their scale. So there should rarely be the need to customize their behaviour. 
+One should also keep in mind that floating point types like double are especially good at keeping track of their scale. So there should rarely be the need for customization. 
 
 # Adjusting the Library
 
@@ -186,7 +187,7 @@ using second   = Unit<0,0,1>;  //            m^0 * kg^0 * s^1
 using meters_per_second = Unit<1,0,-1> //  m^1 * kg^0 * s^-1
 using acceleration = Unit<1,0,-2>      //  m^1 * kg^0 * s^-2
 
-using newton_force = Unit<1,1,-2> // m^1 * kg^1 * s^-2
+using newton_force = Unit<1,1,-2>       // m^1 * kg^1 * s^-2
 };
 ```
 
