@@ -6,5 +6,6 @@ SOURCES +=  \
 HEADERS += \
     $$PWD/NistConstantsGenerator.h \
     $$PWD/NistDefinition.h \
-    $$PWD/generated/physicalConstants.h
+    $$PWD/generated/physicalConstants.h \
+    $$PWD/nistConstantsCout.h
 

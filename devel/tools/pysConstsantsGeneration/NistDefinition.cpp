@@ -92,7 +92,7 @@ void NistDefinition::toCppStatement(std::ostream& s, bool uncertainty_) const
     s <<  " = ";
     s.width(20);
     s << (uncertainty_ ? uncertainty : value);
-    s << "_number";
+    s << "_n";
     s << unitSep(uncertainty_);
     s << cppUnit(uncertainty_);
     s << ";\n";
@@ -216,30 +216,30 @@ void NistDefinition::addUnit(std::string factor)
 
         {"MeV","mega(electron_volt)"},
         {"GeV","giga(electron_volt)"},
-        {"ohm","ohm{1}"},
-        {"mol","mole{1}"},
-        {"MHz","mega(hertz{1})"},
+        {"ohm","ohm"},
+        {"mol","mole"},
+        {"MHz","mega(hertz)"},
         {"E_h","hartree_electron_volt_relationship"},
         {"eV","electron_volt"},
-        {"kg","kilogram{1}"},
-        {"Wb","weber{1}"},
-        {"fm","femto(meter{1})"},
-        {"Pa","pascal{1}"},
-        {"Hz","hertz{1}"},
-        {"sr","steradian{1}"},
+        {"kg","kilogram"},
+        {"Wb","weber"},
+        {"fm","femto(meter)"},
+        {"Pa","pascal"},
+        {"Hz","hertz"},
+        {"sr","steradian"},
         {"u","unified_atomic_mass_unit"},
-        {"J","joule{1}"},
-        {"m","meter{1}"},
-        {"K","kelvin{1}"},
-        {"C","coulomb{1}"},
-        {"s","second{1}"},
-        {"A","ampere{1}"},
-        {"V","volt{1}"},
-        {"N","newton{1}"},
-        {"T","tesla{1}"},
-        {"F","farad{1}"},
-        {"S","siemens{1}"},
-        {"W","watt{1}"},
+        {"J","joule"},
+        {"m","meter"},
+        {"K","kelvin"},
+        {"C","coulomb"},
+        {"s","second"},
+        {"A","ampere"},
+        {"V","volt"},
+        {"N","newton"},
+        {"T","tesla"},
+        {"F","farad"},
+        {"S","siemens"},
+        {"W","watt"},
         {"c","speed_of_light_in_vacuum"}
     };
 

@@ -542,8 +542,8 @@ template<typename ratio>
 using ratio_cubed = std::ratio_multiply< std::ratio_multiply<ratio,ratio>,ratio>;
 
 
-constexpr meter_cubed operator"" _litre ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::deci>>(static_cast<double>(v))};}
-constexpr meter_cubed operator"" _millilitre ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::centi>>(static_cast<double>(v))};}
+constexpr meter_cubed operator"" _liter ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::deci>>(static_cast<double>(v))};}
+constexpr meter_cubed operator"" _milliliter ( long double v ) {return meter_cubed {helper::rescaleTo1<ratio_cubed<std::centi>>(static_cast<double>(v))};}
 
 
 }

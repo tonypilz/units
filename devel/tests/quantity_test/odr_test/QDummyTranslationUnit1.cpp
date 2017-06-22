@@ -8,7 +8,7 @@ namespace q {
 QDummyTranslationUnit1::QDummyTranslationUnit1()
 {
     using namespace unit;
-    std::cout<< newton{124.0} << "\n";
+    std::cout<< t::newton{124.0} << "\n";
 }
 
 }

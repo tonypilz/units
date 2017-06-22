@@ -19,7 +19,7 @@ int run()
 
     std::cout<<(physicalConstant::atomic_unit_of_2nd_hyperpolarizability* physicalConstant::uncertaintiy::atomic_unit_of_2nd_hyperpolarizability)<<"\n";
 
-    newton force = 2.0_meter * 3.0_kilogram / math::square(2.0_second);
+    t::newton force = 2.0_n* meter * 3.0_n * kilogram / math::square(2.0_n * second);
 
     std::cout<<force<<"\n"; //prints "1.5N"
 

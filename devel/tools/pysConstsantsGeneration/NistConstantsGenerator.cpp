@@ -1,5 +1,5 @@
 #include "NistConstantsGenerator.h"
-
+#include "nistConstantsCout.h"
 
 #include <iostream>
 #include <fstream>
@@ -10,6 +10,8 @@
 
 NistConstantsGenerator::NistConstantsGenerator()
 {
+    //unit::physicalConstant::printAllNistConstants();
+
     const std::string cdir = "../devel/tools/pysConstsantsGeneration";
     const std::string inFile = cdir + "/allascii.txt";
     const std::string outFile = cdir + "/generated/physicalConstants.h";
