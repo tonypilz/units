@@ -4,10 +4,14 @@
 #include "tests/TestMain.h"
 #include "tools/SingleFileTester.h"
 
+#include <tools/pysConstsantsGeneration/NistConstantsGenerator.h>
+
 int main()
 {
+    //NistConstantsGenerator{};
+
     tests::TestMain{};
-    //tmp::run();
+    tmp::run();
 
     SingleFileTester{};
 
