@@ -106,6 +106,7 @@ namespace t { //quantity types
 
 
 constexpr t::unitless unitless{1};
+constexpr t::unitless number{1};
 constexpr    t::meter meter{1};
 constexpr t::kilogram kilogram{1};
 constexpr   t::second second{1};

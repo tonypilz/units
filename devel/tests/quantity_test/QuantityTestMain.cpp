@@ -35,12 +35,19 @@ using    unitless = Unit<0,0,0,0>;
 
 }
 
+namespace t {
 using    newton = Quantity<u::newton,    double>;
 using    unitless = Quantity<u::unitless,    double>;
 
-constexpr    newton operator""    _newton ( long double v )  {return     newton {static_cast<double>(v)};}
-constexpr    unitless operator""  _unitless ( long double v )  {return   unitless {static_cast<double>(v)};}
+}
 
+constexpr t::unitless unitless{1};
+constexpr t::newton newton{1};
+
+
+constexpr    t::newton operator""    _newton ( long double v )  {return     t::newton {static_cast<double>(v)};}
+constexpr    t::unitless operator""  _unitless ( long double v )  {return   t::unitless {static_cast<double>(v)};}
+constexpr    t::unitless operator""  _n ( long double v )  {return   t::unitless {static_cast<double>(v)};}
 }
 
 namespace unit {
@@ -173,6 +180,13 @@ static_assert(static_unit_cast<double>(Quantity<u::newton,int>{-4})==-4.0_newton
 
 
 static_assert(Quantity<u::newton>{-4}==-4.0_newton,"");
+
+
+
+static_assert(2.0_n * math::square(newton) == 20000.0_n * math::square(centi(newton)),"");
+
+
+
 
 void print_derived_unit_test_v()
 {
