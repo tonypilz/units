@@ -10,23 +10,28 @@ namespace std{ template<intmax_t, intmax_t > struct ratio;}
 namespace unit {
 namespace math {
 
+using std::ratio;
+using std::abs;
+using std::sqrt;
+using std::pow;
+
 template <typename U, typename T>
-constexpr Quantity<U, decltype(std::abs(T{}))>
+constexpr Quantity<U, decltype(abs(T{}))>
 abs(Quantity<U, T> const& q) {
-    return Quantity<U, decltype(std::abs(T{}))>{std::abs(q.magnitude())};
+    return Quantity<U, decltype(abs(T{}))>{abs(q.magnitude())};
 }
 
 template <typename U, typename T>
-constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>
+constexpr Quantity<raised_unit<U, ratio<1, 2>>, decltype(sqrt(T{}))>
 sqrt(Quantity<U, T> const& q) {
-    return Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>{std::sqrt(q.magnitude())};
+    return Quantity<raised_unit<U, ratio<1, 2>>, decltype(sqrt(T{}))>{sqrt(q.magnitude())};
 }
 
 namespace helper {
 template <typename power, typename T>
-constexpr decltype(std::pow(T{}, T{}))
+constexpr decltype(pow(T{}, T{}))
 pow_impl(T const& v) {
-    return std::pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
+    return pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
 }
 }
 
