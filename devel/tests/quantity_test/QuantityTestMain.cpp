@@ -72,11 +72,6 @@ void quantity_test()
     }
     {
         Quantity<u::newton,int> x(4);
-        x.setMagnitude(Quantity<u::newton,int> (5));
-        assert(x.magnitude()==5);
-    }
-    {
-        Quantity<u::newton,int> x(4);
         x+=Quantity<u::newton,int>{5};
         assert(x.magnitude()==9);
     }

@@ -17,7 +17,7 @@ std::istream& operator>>(std::istream& s, Quantity<Unit, TValue>& v) {
     if (!read_unit<Unit>(s))
         return s;
 
-    v.setMagnitude(Quantity<Unit, TValue>{val});
+     v = Quantity<Unit, TValue>{val};
     return s;
 }
 }

@@ -23,7 +23,6 @@ class Quantity {
     classtype& operator=(classtype const& v) = default;
 
     constexpr magnitude_type const& magnitude() const { return m_magnitude; }
-    void setMagnitude(classtype const& v) { m_magnitude = v.m_magnitude; }
 
    private:
     template <typename U, typename L, typename R>
