@@ -101,6 +101,14 @@ void quantity_test()
         assert(x.magnitude()==5);
     }
 
+    {
+        Quantity<u::newton,std::complex<double>> x{std::complex<double>{4,5}};
+        x = Quantity<u::newton,double>{5}; //assign double to complex
+        assert(x.magnitude()==std::complex<double>{5});
+    }
+    {
+        //Quantity<u::newton,int> x{4.5}; check warning narrowing conversion
+    }
 
 }
 

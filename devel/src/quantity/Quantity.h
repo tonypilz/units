@@ -17,8 +17,8 @@ class Quantity {
 
     constexpr Quantity(classtype const& v) = default;
 
-    template <typename U, typename R>
-    constexpr Quantity(Quantity<U, R> const& v) : m_magnitude(v.m_magnitude) {}
+    template <typename R>
+    constexpr Quantity(Quantity<unit, R> const& v) : m_magnitude(v.m_magnitude) {}
 
     classtype& operator=(classtype const& v) = default;
 
