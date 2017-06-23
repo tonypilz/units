@@ -72,7 +72,6 @@ int main() {
     using namespace unit;
     using namespace unit::literals;
 
-
     t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / math::square(2.0_n*second);
 
     std::cout<<some_force<<"\n"; //prints "1.5N"
@@ -89,13 +88,13 @@ To avoid mistakes, the variable `some_force` cannot be combined with pure double
 some_force = some_force + 2.0;            // compile error
 some_force = some_force + 2.0_n*newton; // ok
 ``` 
-Also, `some_force` can only be combined with compatible units according to the rules of dimensional analysis
+The literal `_n` makes the number a (unitless) quantity.  The variable `some_force` can only be combined with compatible quantities according to the rules of dimensional analysis
 
 ```cpp
-some_force = some_force + 2.0_n*second; // compile error due to summing different units 
-some_force = some_force * 2.0_n*newton; // compile error due to return type mismatch 
+some_force = some_force + second; // compile error due to summing different units 
+some_force = some_force * newton; // compile error due to return type mismatch 
                             // return type is `newton^2`, which cannot be assigned to type 'newton'
-newton_squared some_force2 = some_force * 2.0_n*newton; // ok
+newton_squared some_force2 = some_force * newton; // ok
 ```
 
 Note that `newton_squared` is currently not defined in the library, but [can be easily added](#defining-new-units) if desired.
@@ -236,7 +235,6 @@ using meters_per_second = Unit<1,0,-1> //  m^1 * kg^0 * s^-1
 using acceleration = Unit<1,0,-2>      //  m^1 * kg^0 * s^-2
 
 using newton_force = Unit<1,1,-2>       // m^1 * kg^1 * s^-2
-};
 ```
 
 With these definitions a value of 5 newton would therefore be defined as 
