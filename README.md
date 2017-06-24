@@ -1,5 +1,5 @@
 # units
-A lightweight, compile-time, header-only, dimensional analysis and unit conversion library built on c++11 with no dependencies.
+A lightweight, compile-time, header-only, dimensional analysis and unit conversion library built on c++11 with no dependencies. (play with it on [ideone](https://ideone.com/AiGsoz))
 
 ## Tested on
  - gcc-5.3.0
@@ -27,7 +27,7 @@ A lightweight, compile-time, header-only, dimensional analysis and unit conversi
 
 # Description
 
-The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure. (play with it on [ideone](https://ideone.com/AiGsoz)).
+The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure. 
 
 ## Motivation
 There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [martinmoene/PhysUnits-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11). A more comprehensive list can be found at [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11#other-libraries). All these implementations consist of a considerable amount of code (boost >4000 sloc, nholt/unit 3800 sloc, PysUnit 2500 sloc) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
