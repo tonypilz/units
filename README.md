@@ -19,6 +19,7 @@ Initial release.
   - [Tested on](#tested-on)
   - [Compiles Under](#compiles-under)
 - [Contents](#contents)
+- [Description](#description)
 - [Motivation](#motivation)
 - [Features](#features)
 - [Limitations](#limitations)
@@ -71,7 +72,6 @@ int main() {
     using namespace unit;
     using namespace unit::literals;
 
-
     t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / math::square(2.0_n*second);
 
     std::cout<<some_force<<"\n"; //prints "1.5N"
@@ -88,13 +88,13 @@ To avoid mistakes, the variable `some_force` cannot be combined with pure double
 some_force = some_force + 2.0;            // compile error
 some_force = some_force + 2.0_n*newton; // ok
 ``` 
-Also, `some_force` can only be combined with compatible units according to the rules of dimensional analysis
+The literal `_n` makes the number a (unitless) quantity.  The variable `some_force` can only be combined with compatible quantities according to the rules of dimensional analysis
 
 ```cpp
-some_force = some_force + 2.0_n*second; // compile error due to summing different units 
-some_force = some_force * 2.0_n*newton; // compile error due to return type mismatch 
+some_force = some_force + second; // compile error due to summing different units 
+some_force = some_force * newton; // compile error due to return type mismatch 
                             // return type is `newton^2`, which cannot be assigned to type 'newton'
-newton_squared some_force2 = some_force * 2.0_n*newton; // ok
+newton_squared some_force2 = some_force * newton; // ok
 ```
 
 Note that `newton_squared` is currently not defined in the library, but [can be easily added](#defining-new-units) if desired.
@@ -152,15 +152,61 @@ Math functions can be added anywhere. The existing math functions can be found i
 
 # Representation in non-base-units
 
-The representation in non-base-units can be achived by defining a type which remembers its scale and behaves accordingly under aritmetic operations. Such a type is not part of the library.
+The representation in non-base-units can be achived by using the type [ScaledValue](https://github.com/tonypilz/ScaledValue) as magnitude-type. This type remembers its scale and behaves accordingly under aritmetic operations. The following example illustrates the usage:
+
+```cpp
+#include <units.h>
+#include <ScaledValue.h>
+
+using namespace unit;
+using namespace sv;
+
+using SvMilli = ScaledValue<std::milli,double>;
+using SvKilo = ScaledValue<std::kilo,double>;
+using Sv1 = ScaledValue<std::ratio<1>,double>;
+
+constexpr Quantity<u::newton,Sv1> s_newton {1.0};
+constexpr Quantity<u::unitless,Sv1> s_unitLess{1.0};
+
+constexpr Quantity<u::unitless,SvKilo> operator"" _kilo ( long double v )  {return Quantity<u::unitless,SvKilo> {static_cast<double>(v)};}
+constexpr Quantity<u::unitless,SvMilli> operator"" _milli ( long double v )  {return Quantity<u::unitless,SvMilli> {static_cast<double>(v)};}
+
+int main() {
+
+
+    using namespace unit;
+    using namespace sv;
+
+    //define unit values on different scales
+    auto a = 2.0_kilo * s_newton;
+    auto b = 500.0_milli * s_newton;
+
+    //combination
+    auto c = a + b;
+    auto d = a * b;
+
+    //conversion
+    auto e = Quantity<u::newton,Sv1>{b};
+
+    //printing
+    std::cout << a << std::endl; // prints "2*kiloN"
+    std::cout << b << std::endl; // prints "500*milliN"
+    std::cout << c << std::endl; // prints "2.0005*kiloN"
+    std::cout << d << std::endl; // prints "1*kilom^2kg^2s^-4" (which is 1*kilo N^2)
+    std::cout << e << std::endl; // prints "0.5N"
+    
+    return 0;
+}
+```
+The definitions above `main` improve the usability. They are similar to the ones in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). So to make efficient use of scaled units one should update the definitions in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). Also be aware that the math functions need to be updated too due to current adl lookup issues. 
 
 Note: One should be aware that this form of delayed rescaling might incur runtime overhead since rescaling has to happen each time two values with different scales are combined.
 
-One should also keep in mind that floating point types like double are especially good at keeping track of their scale. So there should rarely be the need for customization. 
+One should also keep in mind that floating point types like double are especially good at keeping track of their scale. So there should rarely be the need for this form of customization. 
 
 # Adjusting the Library
 
-The library is specially designed to be adjusted to special needs. It can be done by changing the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file, which begins at `namespace u` and which can be searched for. Everything below `namespace u` be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
+The library is specially designed to be adjusted to special needs. It can be done by changing the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file, which begins at `namespace u` (which can be searched for). Everything below `namespace u` be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
 
 # Under the Hood
 
@@ -168,7 +214,8 @@ The library essentially consists of 2 classes
 
 ```cpp
 
-template< int ... dimensionExponents > struct Unit{};
+template< int ... dimensionExponents > 
+struct Unit{};
 
 template <typename Unit, typename MagnitudeRepresentation = double>
 class Quantity {
@@ -188,7 +235,6 @@ using meters_per_second = Unit<1,0,-1> //  m^1 * kg^0 * s^-1
 using acceleration = Unit<1,0,-2>      //  m^1 * kg^0 * s^-2
 
 using newton_force = Unit<1,1,-2>       // m^1 * kg^1 * s^-2
-};
 ```
 
 With these definitions a value of 5 newton would therefore be defined as 
