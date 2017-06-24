@@ -1,10 +1,6 @@
 # units
 A lightweight, compile-time, header-only, dimensional analysis and unit conversion library built on c++11 with no dependencies.
 
-# Latest Release - v1.0.0
-
-Initial release.
-
 ## Tested on
  - gcc-5.3.0
 
@@ -37,9 +33,9 @@ The library allows to track the dimensions of physical quantities at compile-tim
 ## Motivation
 There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [martinmoene/PhysUnits-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11). A more comprehensive list can be found at [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11#other-libraries). All these implementations consist of a considerable amount of code (boost >4000 sloc, nholt/unit 3800 sloc, PysUnit 2500 sloc) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
 
-This library tries to adress the issue by beeing small (500 sloc*) and simple to allow users understand the code and adjust it to their needs more easily.  
+This library tries to adress the issue by beeing small (500 sloc*) and simple to allow users understand and customize the code more easily.  
 
-*Note that 500 sloc includes SI-Unit-Definitions an input/output and excludes [physicalConstants.h](include/physicalConstants.h). The [essential code without input/output and predefined units](https://github.com/tonypilz/units/blob/master/devel/tools/SingleFileMinimalExample.h) consists of 250sloc.
+*Note that 500 sloc include SI-Unit-Definitions an input/output and exclude [physicalConstants.h](include/physicalConstants.h). The essential code without input/output and predefined units consists of [250 sloc](https://github.com/tonypilz/units/blob/master/devel/tools/SingleFileMinimalExample.h).
 
 # Features
 The library can be used for
@@ -51,13 +47,13 @@ The library can be used for
 It is designed to be extendable to special needs. Its mostly constexpr, well tested and incurs no runtime overhead (at optimization -O1). All constants from [nist](http://physics.nist.gov/cuu/Constants/Table/allascii.txt) are available (see [physicalConstants.h](include/physicalConstants.h)).
  
 # Limitations
-Storing values in non-base-units (e.g. millisecs) cannot be done with this library (see [Representation in non-base-units](#representation-in-non-base-units)). 
-
-Therefore printing and reading is done in terms of baseunits, so eg
+Storing values in non-base-units (e.g. millisecs) cannot be done with this library (see [Representation in non-base-units](#representation-in-non-base-units)). Therefore printing and reading is done in terms of baseunits, so eg
 ```cpp
 cout << 3.0_n * milli(newton); // prints "0.003N"
 ```
 More advanced printing and reading can be added if reqired.
+
+Since the unit of a variable is a compile time property it cannot change during runtime unless a form of [std::variant](http://en.cppreference.com/w/cpp/utility/variant) (c++17) or eg [variant-lite](https://github.com/martinmoene/variant-lite) (c++11) is used.
  
 # Getting Started Guide
 The library consists of a single file ([units.h](include/units.h)). To incorporate the library into your project, simply copy the header into a location in your include path.
@@ -130,7 +126,7 @@ Sometimes there is the need to combine a unit with a unitless scalar:
 
 ```cpp
 double s = sin(45);
-auto a = 2.0_n*meter; 
+auto a = 2.0_n * meter; 
 auto c = a * number{s};
 ```
 
@@ -148,7 +144,7 @@ Units can be defined anywhere. The existing definitions can be found in namespac
 
 # Adding a new Math Function
 
-Math functions can be added anywhere. The existing math functions can be found in the namespace math in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h), just search there for `sqrt` to find examples.
+Math functions can be added anywhere. The existing math functions can be found in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) searching for `sqrt`.
 
 # Representation in non-base-units
 
@@ -185,20 +181,23 @@ int main() {
     auto c = a + b;
     auto d = a * b;
 
-    //conversion
-    auto e = Quantity<u::newton,Sv1>{b};
+    //math
+    auto e = sqrt(d);
 
-    //printing
+    //conversion
+    auto f = Quantity<u::newton,Sv1>{b};
+
     std::cout << a << std::endl; // prints "2*kiloN"
     std::cout << b << std::endl; // prints "500*milliN"
     std::cout << c << std::endl; // prints "2.0005*kiloN"
-    std::cout << d << std::endl; // prints "1*kilom^2kg^2s^-4" (which is 1*kilo N^2)
-    std::cout << e << std::endl; // prints "0.5N"
+    std::cout << d << std::endl; // prints "1*kilom^2kg^2s^-4" which is 1*kilo N^2
+    std::cout << e << std::endl; // prints "0.0316228*kiloN"
+    std::cout << f << std::endl; // prints "0.5N"
     
     return 0;
 }
 ```
-The definitions above `main` improve the usability. They are similar to the ones in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). So to make efficient use of scaled units one should update the definitions in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). Also be aware that the math functions need to be updated too due to current adl lookup issues. 
+The definitions above `main` improve the usability. They are similar to the ones in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). So to make efficient use of scaled units one should update the definitions in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). 
 
 Note: One should be aware that this form of delayed rescaling might incur runtime overhead since rescaling has to happen each time two values with different scales are combined.
 
