@@ -11,7 +11,6 @@ A lightweight, compile-time, header-only, dimensional analysis and unit conversi
  
 # Contents
 - [UNITS](#units)
-- [Latest Release - v1.1.0](#latest-release---v100)
   - [Tested on](#tested-on)
   - [Compiles Under](#compiles-under)
 - [Contents](#contents)
@@ -28,7 +27,7 @@ A lightweight, compile-time, header-only, dimensional analysis and unit conversi
 
 # Description
 
-The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure.
+The library allows to track the dimensions of physical quantities at compile-time which enforces the the rules of dimension algebra with no runtime overhead. Additionally, the library provides some convenient conversions between different units of mesaure. (play with it on [ideone](https://ideone.com/AiGsoz)).
 
 ## Motivation
 There exist quite a few other implementations for dimensional tracking eg. [Boost.Unit](http://www.boost.org/doc/libs/1_64_0/doc/html/boost_units.html), [nholthaus/units](https://github.com/nholthaus/units) or [martinmoene/PhysUnits-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11). A more comprehensive list can be found at [PhysUnit-CT-Cpp11](https://github.com/martinmoene/PhysUnits-CT-Cpp11#other-libraries). All these implementations consist of a considerable amount of code (boost >4000 sloc, nholt/unit 3800 sloc, PysUnit 2500 sloc) and that they make strong use of macros. This makes understanding the code and adjusting it for special needs a time intensive task.
@@ -68,7 +67,7 @@ int main() {
     using namespace unit;
     using namespace unit::literals;
 
-    t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / math::square(2.0_n*second);
+    t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / square(2.0_n*second);
 
     std::cout<<some_force<<"\n"; //prints "1.5N"
     
@@ -100,16 +99,16 @@ Due to the dimensional checking, `auto` can savely be used, errors will be caugh
 ```cpp
 auto a = 2.0_n*meter;
 auto b = 3.0_n*meter; 
-auto c = math::sqr(a*a + b*b);  // pytagoras intended
+auto c = sqr(a*a + b*b);  // pytagoras intended
 
-auto force1 = c * 3.0_n*kilogram / math::square(2.0_n*second);
+auto force1 = c * 3.0_n*kilogram / sqr(2.0_n*second);
 auto force2 = 5.0_n*newton;
 
 force1 += force2; // compile error since force1 is of different type m*N
                   // since we forgot a 't' in 'sqr' making c of type meter^2  
 ```
 
-The library provides some math functions (from <cmath>) which provide the respective unit transformations. If a math function is missing it can be [easily added](#adding-a-new-math-function) if desired.
+The library provides some math functions (from `<cmath>`) which provide the respective unit transformations. If a math function is missing it can be [easily added](#adding-a-new-math-function) if desired.
 
 Converting to base units is also possible:
 
@@ -169,10 +168,6 @@ constexpr Quantity<u::unitless,SvMilli> operator"" _milli ( long double v )  {re
 
 int main() {
 
-
-    using namespace unit;
-    using namespace sv;
-
     //define unit values on different scales
     auto a = 2.0_kilo * s_newton;
     auto b = 500.0_milli * s_newton;
@@ -197,7 +192,7 @@ int main() {
     return 0;
 }
 ```
-The definitions above `main` improve the usability. They are similar to the ones in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). So to make efficient use of scaled units one should update the definitions in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h). 
+The definitions above `main()` serve readability. They are similar to the ones in [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) which should be adjusted in case of using ScaledValues togehter with units.
 
 Note: One should be aware that this form of delayed rescaling might incur runtime overhead since rescaling has to happen each time two values with different scales are combined.
 
@@ -205,7 +200,7 @@ One should also keep in mind that floating point types like double are especiall
 
 # Adjusting the Library
 
-The library is specially designed to be adjusted to special needs. It can be done by changing the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file, which begins at `namespace u` (which can be searched for). Everything below `namespace u` be changed to meet special needs. In case of questions the [next chapter](#under-the-hood) might be of use.
+The library is specially designed to be customizable. It can be done by changing the lower part of the [units.h](https://github.com/tonypilz/units/blob/master/include/units.h) file, which begins at `namespace u` (which can be searched for). Everything below `namespace u` be changed to meet special needs.
 
 # Under the Hood
 
@@ -223,7 +218,9 @@ class Quantity {
 };
 ```
 
-The class `Quanitity` combines a magnitude-value and a unit-type. The class `unit` is a pure type wich is different for each physical dimension by storing the exponents of all possible base-units in its template parameter. The following example illustrates the idea of units:
+The class `Quanitity` combines a magnitude-value and a unit-type. 
+
+The class `Unit` is a pure type wich is different for each physical dimension by storing the exponents of all possible base-units in its template parameter. The following example illustrates the idea of class `Unit`:
 
 ```cpp
 using metre    = Unit<1,0,0>;  // represents m^1 * kg^0 * s^0
@@ -236,7 +233,7 @@ using acceleration = Unit<1,0,-2>      //  m^1 * kg^0 * s^-2
 using newton_force = Unit<1,1,-2>       // m^1 * kg^1 * s^-2
 ```
 
-With these definitions a value of 5 newton would therefore be defined as 
+With these definitions a value of 5 newton could therefore be represented as 
 
 ```cpp
 Quantity< Unit<1,1,-2>, double > q{5};
