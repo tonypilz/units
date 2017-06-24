@@ -16,6 +16,7 @@ class Quantity {
     constexpr explicit Quantity(magnitude_type const& v) : m_magnitude(v) {}
 
     constexpr Quantity(classtype const& v) = default;
+    constexpr Quantity(classtype &&) = default;
 
     template <typename R>
     constexpr Quantity(Quantity<unit, R> const& v) : m_magnitude(v.m_magnitude) {}
