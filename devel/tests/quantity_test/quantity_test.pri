@@ -2,8 +2,10 @@ include($$PWD/odr_test/odr_test.pri)
 
 HEADERS += \
     $$PWD/QuantityTestMain.h \
-    $$PWD/QuantityDefinitionsTest.h
+    $$PWD/QuantityDefinitionsSiTest.h \
+    $$PWD/QuantityDefinitionsMinExampleTest.h
 
 SOURCES += \
     $$PWD/QuantityTestMain.cpp \
-    $$PWD/QuantityDefinitionsTest.cpp
+    $$PWD/QuantityDefinitionsSiTest.cpp \
+    $$PWD/QuantityDefinitionsMinExampleTest.cpp

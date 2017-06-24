@@ -10,7 +10,6 @@ namespace unit {
 namespace physicalConstant{
 
 using namespace literals;
-using namespace math;
 
 constexpr auto                        c_220_lattice_spacing_of_silicon =      192.0155714e-12_n * meter;
 constexpr auto                      alpha_particle_electron_mass_ratio =        7294.29954136_n;

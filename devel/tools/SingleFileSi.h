@@ -25,13 +25,12 @@ class Quantity {
 
     constexpr Quantity(classtype const& v) = default;
 
-    template <typename U, typename R>
-    constexpr Quantity(Quantity<U, R> const& v) : m_magnitude(v.m_magnitude) {}
+    template <typename R>
+    constexpr Quantity(Quantity<unit, R> const& v) : m_magnitude(v.m_magnitude) {}
 
     classtype& operator=(classtype const& v) = default;
 
     constexpr magnitude_type const& magnitude() const { return m_magnitude; }
-    void setMagnitude(classtype const& v) { m_magnitude = v.m_magnitude; }
 
    private:
     template <typename U, typename L, typename R>
@@ -239,66 +238,72 @@ template <typename LU, typename LT>
 constexpr Quantity<LU, LT> operator-(Quantity<LU, LT> const& l) {
     return Quantity<LU, LT>{-l.magnitude()};
 }
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-namespace unit {
-namespace math {
 
 template <typename U, typename T>
-constexpr Quantity<U, decltype(std::abs(T{}))>
-abs(Quantity<U, T> const& q) {
-    return Quantity<U, decltype(std::abs(T{}))>{std::abs(q.magnitude())};
+constexpr auto
+abs(Quantity<U, T> const& q)
+        -> Quantity<U, decltype(abs(q.magnitude()))>
+{
+    using std::abs;
+    return Quantity<U, decltype(abs(q.magnitude()))>{
+                                abs(q.magnitude())};
 }
 
 template <typename U, typename T>
-constexpr Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>
-sqrt(Quantity<U, T> const& q) {
-    return Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(std::sqrt(T{}))>{std::sqrt(q.magnitude())};
+constexpr auto
+sqrt(Quantity<U, T> const& q)
+        -> Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(sqrt(q.magnitude()))>
+{
+    using std::sqrt;
+    return Quantity<raised_unit<U, std::ratio<1, 2>>, decltype(sqrt(q.magnitude()))>{
+                                                               sqrt(q.magnitude())};
 }
 
 namespace helper {
+
 template <typename power, typename T>
-constexpr decltype(std::pow(T{}, T{}))
-pow_impl(T const& v) {
-    return std::pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
+constexpr auto
+pow_impl(T const& v)
+ -> decltype(pow(v, static_cast<double>(power::num) / static_cast<double>(power::den)))
+
+{
+    using std::pow;
+    return pow(v, static_cast<double>(power::num) / static_cast<double>(power::den));
 }
+
 }
 
 template <typename power, typename U, typename T>
-constexpr Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>
-pow(
-    Quantity<U, T> const& q)
+constexpr auto
+pow(Quantity<U, T> const& q)
+        -> Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(q.magnitude()))>
 {
-    return Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(T{}))>{
-        helper::pow_impl<power, T>(q.magnitude())};
+    return Quantity<raised_unit<U, power>, decltype(helper::pow_impl<power, T>(q.magnitude()))>{
+                                                    helper::pow_impl<power, T>(q.magnitude())};
 }
 
 template <typename U, typename T>
 constexpr auto
 cube(Quantity<U, T> const& q)
-    -> Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())> {
+        -> Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())>
+{
     return Quantity<product_unit<product_unit<U, U>, U>, decltype((q.magnitude() * q.magnitude()) * q.magnitude())>{
-        (q.magnitude() * q.magnitude()) * q.magnitude()};
+                                                                  (q.magnitude() * q.magnitude()) * q.magnitude()};
 }
 
 template <typename U, typename T>
 constexpr auto
-square(Quantity<U, T> const& q) -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())> {
-    return Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>{q.magnitude() * q.magnitude()};
+square(Quantity<U, T> const& q)
+        -> Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>
+{
+    return Quantity<product_unit<U, U>, decltype(q.magnitude() * q.magnitude())>{
+                                                 q.magnitude() * q.magnitude()};
 }
-}
+
+
+
+
 
 template <typename U>
 constexpr const char* unitSymbol();
@@ -364,7 +369,7 @@ std::istream& operator>>(std::istream& s, Quantity<Unit, TValue>& v) {
     if (!read_unit<Unit>(s))
         return s;
 
-    v.setMagnitude(Quantity<Unit, TValue>{val});
+     v = Quantity<Unit, TValue>{val};
     return s;
 }
 
@@ -601,6 +606,7 @@ template<> inline void print_unit< u::gray>(std::ostream& s){ s<<"Gy"; }
 template<> inline void print_unit< u::katal>(std::ostream& s){ s<<"ka"; }
 
 }
+
 
 
 

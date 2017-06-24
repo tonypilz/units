@@ -1,4 +1,4 @@
-#include "QuantityDefinitionsTest.h"
+#include "QuantityDefinitionsSiTest.h"
 #include "QuantityTestMain.h"
 
 #include "odr_test/QDummyTranslationUnit1.h"
@@ -118,19 +118,19 @@ void complex_math_test() //complex functions are not constexpr, therefore non-st
     using cnewton_cub = Quantity<u_newton_cub, TComplex> ;
 
 
-    assert(math::abs(cnewton{-7})==ncnewton{7});
-    assert(math::abs(cnewton{TComplex{3,4}})==ncnewton{5});
+    assert(abs(cnewton{-7})==ncnewton{7});
+    assert(abs(cnewton{TComplex{3,4}})==ncnewton{5});
 
     {
-        const bool b = math::square(cnewton{TComplex{3,4}})==cnewton_sqr{TComplex{-7,24}};
+        const bool b = square(cnewton{TComplex{3,4}})==cnewton_sqr{TComplex{-7,24}};
         assert(b);
     }
     {
-        const bool b = math::cube(cnewton{TComplex{3,4}})==cnewton_cub{TComplex{-117,44}};
+        const bool b = cube(cnewton{TComplex{3,4}})==cnewton_cub{TComplex{-117,44}};
         assert(b);
     }
     {
-        const bool b = math::sqrt(cnewton_sqr{TComplex{-7,24}})==cnewton{TComplex{3,4}};
+        const bool b = sqrt(cnewton_sqr{TComplex{-7,24}})==cnewton{TComplex{3,4}};
         assert(b);
     }
 
@@ -142,9 +142,9 @@ void complex_math_test() //complex functions are not constexpr, therefore non-st
         using dst = Quantity<u_dst, TComplex> ;
 
         const auto expected = dst{TComplex{2,11}};
-        const auto actual = math::pow<e>(src{TComplex{3,4}});
+        const auto actual = pow<e>(src{TComplex{3,4}});
 
-        const auto d = math::abs(expected-actual); //rounding error
+        const auto d = abs(expected-actual); //rounding error
         assert(d.magnitude()<1.0e-14);
     }
 
@@ -164,17 +164,17 @@ void type_agnostic_test(){
 }
 
 
-static_assert(math::abs(-7.0_newton)==7.0_newton,"");
-static_assert(math::square(-7.5_newton)== Quantity<product_unit<u::newton,u::newton>>{56.25},"");
-static_assert(math::cube(-7.5_newton)== Quantity<product_unit<u::newton,product_unit<u::newton,u::newton>>>{-421.875},"");
-static_assert(math::sqrt(Quantity<product_unit<u::newton,u::newton>>{56.25})==7.5_newton,"");
-//static_assert(math::sqrt(Quantity<u::newton>{56.25})==7.5_newton,""); //mustnt compile
-static_assert(math::pow<std::ratio<1,2>>(math::square(-7.5_newton))==7.5_newton,"");
-static_assert(math::pow<std::ratio<1>>(-7.5_newton)==-7.5_newton,"");
-static_assert(math::pow<std::ratio<2>>(-7.5_newton)==math::square(-7.5_newton),"");
+static_assert(abs(-7.0_newton)==7.0_newton,"");
+static_assert(square(-7.5_newton)== Quantity<product_unit<u::newton,u::newton>>{56.25},"");
+static_assert(cube(-7.5_newton)== Quantity<product_unit<u::newton,product_unit<u::newton,u::newton>>>{-421.875},"");
+static_assert(sqrt(Quantity<product_unit<u::newton,u::newton>>{56.25})==7.5_newton,"");
+//static_assert(sqrt(Quantity<u::newton>{56.25})==7.5_newton,""); //mustnt compile
+static_assert(pow<std::ratio<1,2>>(square(-7.5_newton))==7.5_newton,"");
+static_assert(pow<std::ratio<1>>(-7.5_newton)==-7.5_newton,"");
+static_assert(pow<std::ratio<2>>(-7.5_newton)==square(-7.5_newton),"");
 
 
-static_assert(math::pow<std::ratio<0>>(-7.5_newton)==1.0_unitless,"");
+static_assert(pow<std::ratio<0>>(-7.5_newton)==1.0_unitless,"");
 
 static_assert( 4.3_newton == 4.3_newton,"");
 static_assert( 4.3_newton >= 4.3_newton,"");
@@ -198,7 +198,7 @@ static_assert(Quantity<u::newton>{-4}==-4.0_newton,"");
 
 
 
-static_assert(2.0_n * math::square(newton) == 20000.0_n * math::square(centi(newton)),"");
+static_assert(2.0_n * square(newton) == 20000.0_n * square(centi(newton)),"");
 
 
 
@@ -258,7 +258,7 @@ QuantityTestMain::QuantityTestMain()
 {
     q::QDummyTranslationUnit1{};
     q::QDummyTranslationUnit2{};
-    QuantityDefinitionsTest{};
+    QuantityDefinitionsSiTest{};
 
     read_unit_test_v();
     print_derived_unit_test_v();

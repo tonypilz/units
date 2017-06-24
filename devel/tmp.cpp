@@ -20,7 +20,7 @@ int run()
 
     std::cout<<(physicalConstant::atomic_unit_of_2nd_hyperpolarizability* physicalConstant::uncertaintiy::atomic_unit_of_2nd_hyperpolarizability)<<"\n";
 
-    t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / math::square(2.0_n*second);
+    t::newton some_force = 2.0_n*meter * 3.0_n*kilogram / square(2.0_n*second);
 
     std::cout<<some_force<<"\n"; //prints "1.5N"
 
@@ -30,7 +30,7 @@ int run()
 
     std::cout<<some_force<<"\n"; //prints "6.5N"
 
-    std::cout<<math::cube( 500.0_n * deci(inch) ) <<"\n"; //f == 3.53961e-009m^3
+    std::cout<<cube( 500.0_n * deci(inch) ) <<"\n"; //f == 3.53961e-009m^3
 
     return 0;
 

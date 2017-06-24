@@ -19,11 +19,11 @@ using foo_inv = quotient_unit<unitless, foo>;
 namespace t {
 
 // base units
-using unitless = Quantity<u::unitless, def>;
-using foo = Quantity<u::foo, def>;
+using unitless = Quantity<u::unitless>;
+using foo = Quantity<u::foo>;
 
 // derived units
-using foo_inv = Quantity<u::foo_inv, def>;
+using foo_inv = Quantity<u::foo_inv>;
 }
 
 constexpr t::unitless number{1};

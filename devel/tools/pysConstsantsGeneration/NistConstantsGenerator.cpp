@@ -115,7 +115,6 @@ void NistConstantsGenerator::toCppCodeConstantsPrefix(std::ostream &s, std::stri
     s<<"namespace physicalConstant{\n";
     s<<"\n";
     s<<"using namespace literals;\n";
-    s<<"using namespace math;\n";
     s << "\n";
 }
 
